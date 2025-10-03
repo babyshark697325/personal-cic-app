@@ -1,155 +1,285 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useRef, useEffect } from 'react';
+import FlowerIcon from '@/components/FlowerIcon';
+
+interface Message {
+  id: number;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
+}
 
 export default function ChatPage() {
-  const [question, setQuestion] = useState("");
-  const [conversations, setConversations] = useState<Array<{question: string, answer: string}>>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputText, setInputText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const sampleQuestions = [
-    "How has my coding confidence grown over time?",
-    "What programming concepts have I mastered recently?",
-    "What patterns do you see in my learning journey?",
-    "Which challenges have helped me grow the most?",
-    "What should I focus on next in my development?"
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const generateAIResponse = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // Sample question responses
+    if (lowerMessage.includes('work on next') || lowerMessage.includes('what should i work on next')) {
+      return "Based on your current tasks and priorities, I recommend focusing on:\n\n• Your One-on-One Meeting preparation (due today)\n• Complete the client status update (currently at 11% progress)\n• Review the Product launch project tasks\n\nThese items will have the highest impact on your weekly goals. Would you like me to help you prioritize or break down any of these tasks?";
+    }
+    
+    if (lowerMessage.includes('urgent tasks') || lowerMessage.includes('what are my urgent tasks')) {
+      return "Here are your urgent tasks that need immediate attention:\n\n🔴 **High Priority - Due Today:**\n• One-on-One Meeting (scheduled for 10:00 AM)\n\n🟡 **Medium Priority:**\n• Send summary email to stakeholders (3 days left)\n• Update project documentation (63% complete)\n\nI recommend tackling the meeting preparation first, then the stakeholder email. Would you like me to help you plan these tasks?";
+    }
+    
+    if (lowerMessage.includes('tasks created') || lowerMessage.includes('created by me and closed')) {
+      return "Here's a summary of your task creation and completion activity:\n\n📝 **Tasks Created by You:**\n• Total created this week: 5 tasks\n• Created for team members: 3 tasks\n• Personal tasks: 2 tasks\n\n✅ **Tasks Completed:**\n• Completed this week: 12 tasks\n• Completion rate: 85%\n• Average completion time: 2.3 days\n\nYou're showing excellent productivity! Your task creation and completion balance is very healthy.";
+    }
+    
+    // Default response for other queries
+    return "I'm here to help you with your productivity and tasks! I can assist you with:\n\n• Task prioritization and planning\n• Schedule optimization\n• Productivity insights and analytics\n• Goal tracking and progress updates\n• Meeting and deadline management\n\nWhat specific area would you like help with today?";
+  };
+
+  const handleSendMessage = async (text?: string) => {
+    const messageText = text || inputText;
+    if (!messageText.trim()) return;
+
+    // If this is the first message, show the chat interface
+    if (messages.length === 0) {
+      setShowChat(true);
+    }
+
+    const userMessage: Message = {
+      id: messages.length + 1,
+      text: messageText,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputText('');
+    setIsTyping(true);
+
+    // Simulate AI thinking time
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: messages.length + 2,
+        text: generateAIResponse(messageText),
+        isUser: false,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, aiResponse]);
+      setIsTyping(false);
+    }, 1500);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const quickQuestions = [
+    "What should I work on next?",
+    "What are my urgent tasks?", 
+    "What tasks are created by me and closed?"
   ];
 
-  function handleAsk() {
-    if (!question.trim()) return;
-    
-    setIsLoading(true);
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      const mockAnswers = [
-        `Based on your check-ins, you've been working on "${question.toLowerCase()}". You've shown great progress with React components and have been consistently learning new concepts.`,
-        `Looking at your recent activity, I can see you've been focused on frontend development. Your mood has been generally positive, and you're building momentum in your coding journey.`,
-        `From your check-ins, it appears you've been exploring Next.js, TypeScript, and CSS Grid. You've faced some challenges but have shown great resilience in pushing through difficult concepts.`,
-        `Your recent entries show you're making steady progress. The family tree project seems to be a significant focus, and you're learning valuable skills in component architecture.`
-      ];
-      
-      const randomAnswer = mockAnswers[Math.floor(Math.random() * mockAnswers.length)];      
-      setConversations(prev => [...prev, { question, answer: randomAnswer }]);
-      setQuestion("");
-      setIsLoading(false);
-    }, 1500);
-  }
+  if (!showChat) {
+    // Initial landing page view
+    return (
+      <div className="bg-gradient-to-br from-purple-100 via-purple-50 to-blue-50 min-h-screen flex flex-col items-center justify-center px-8" style={{background: 'linear-gradient(135deg, #f3f1ff 0%, #ede9ff 50%, #e6f3ff 100%)'}}>
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl text-gray-800 leading-tight mb-2" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
+            Bloom AI
+          </h1>
+          <p className="text-sm text-gray-600">
+            Your personal productivity assistant
+          </p>
+        </div>
 
-  function handleSampleQuestion(sampleQ: string) {
-    setQuestion(sampleQ);
-  }
-
-  return (
-    <div className="max-w-3xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-slate-100">My CIC Journey Insights</h1>
-        <p className="text-slate-300 font-medium">
-          Get personalized insights about your coding journey and growth patterns
-        </p>
-      </div>
-
-      {/* Chat Interface */}
-      <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl border border-slate-700 shadow-lg overflow-hidden">
-        {/* Conversation History */}
-        {conversations.length > 0 && (
-          <div className="max-h-96 overflow-y-auto p-6 space-y-4 border-b border-slate-700">
-            {conversations.map((conv, index) => (
-              <div key={index} className="space-y-3">
-                {/* User Question */}
-                <div className="flex justify-end">
-                  <div className="bg-indigo-600 text-white rounded-2xl rounded-br-md px-4 py-3 max-w-sm">
-                    <p className="text-sm font-medium">{conv.question}</p>
-                  </div>
-                </div>
-                
-                {/* AI Response */}
-                <div className="flex justify-start">
-                  <div className="bg-slate-700 text-slate-200 rounded-2xl rounded-bl-md px-4 py-3 max-w-sm">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span className="text-xs font-semibold text-slate-400">AI Assistant</span>
-                    </div>
-                    <p className="text-sm leading-relaxed font-medium">{conv.answer}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+        {/* Central Flower Icon */}
+        <div className="mb-8">
+          <div className="w-16 h-16 mx-auto">
+            <FlowerIcon />
           </div>
-        )}
+        </div>
 
-        {/* Input Section */}
-        <div className="p-6 space-y-4">
-          <div className="flex space-x-3">
-            <input
-              className="flex-1 px-4 py-3 border-2 border-slate-600 rounded-xl focus:border-indigo-400 focus:ring-0 transition-colors duration-200 text-slate-100 placeholder-slate-400 bg-slate-700/50"
-              placeholder="Ask me anything about your CIC journey..."
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAsk()}
-              disabled={isLoading}
-            />
+        {/* Quick Question Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full mb-8">
+          {quickQuestions.map((question, index) => (
             <button
-              onClick={handleAsk}
-              disabled={!question.trim() || isLoading}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
-                question.trim() && !isLoading
-                  ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg hover:shadow-xl"
-                  : "bg-slate-600 text-slate-400 cursor-not-allowed"
-              }`}
+              key={index}
+              onClick={() => handleSendMessage(question)}
+              className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm border border-white/50 hover:shadow-md hover:bg-white/90 transition-all duration-200 text-center group"
             >
-              {isLoading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
-                  <span>Thinking...</span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <span>Ask</span>
-                </div>
-              )}
+              <div className="text-sm font-medium group-hover:text-gray-700 transition-colors" style={{color: '#736ee1'}}>
+                {question}
+              </div>
             </button>
-          </div>
+          ))}
+        </div>
 
-          {/* Sample Questions */}
-          <div className="space-y-3">
-            <p className="text-sm font-semibold text-slate-200">Try asking:</p>
-            <div className="flex flex-wrap gap-2">
-              {sampleQuestions.map((sample, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSampleQuestion(sample)}
-                  className="px-3 py-2 text-sm bg-indigo-900/50 text-indigo-300 rounded-lg border border-indigo-800/50 hover:bg-indigo-900/70 transition-colors duration-200 font-medium"
-                >
-                  {sample}
-                </button>
-              ))}
+        {/* Input Area */}
+        <div className="w-full max-w-xl">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 shadow-sm border border-white/50">
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Ask Bloom AI anything..."
+                  className="w-full px-3 py-2 border-0 rounded-lg text-sm focus:outline-none focus:ring-2 bg-white/70"
+                />
+              </div>
+              <button
+                onClick={() => handleSendMessage()}
+                disabled={!inputText.trim()}
+                className="px-4 py-2 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{backgroundColor: '#736ee1'}}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Chat interface view
+  return (
+    <div className="bg-gray-50 min-h-screen flex flex-col">
+      <div className="px-6 pt-6 pb-3">
+        {/* Header */}
+        <div className="mb-4">
+          <div className="flex items-center gap-3 mb-2">
+            <button 
+              onClick={() => {
+                setShowChat(false);
+                setMessages([]);
+                setInputText('');
+              }}
+              className="w-8 h-8 flex items-center justify-center hover:opacity-80 transition-all"
+            >
+              <div className="w-6 h-6">
+                <FlowerIcon />
+              </div>
+            </button>
+            <div>
+              <h1 className="text-2xl text-gray-800 leading-tight" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
+                Bloom AI
+              </h1>
+              <p className="text-sm text-gray-600">
+                Your personal productivity assistant
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Empty State */}
-      {conversations.length === 0 && (
-        <div className="text-center py-12 bg-slate-800 rounded-2xl border-2 border-dashed border-slate-600">
-          <h3 className="text-lg font-semibold text-slate-200 mb-2">Ready to explore your journey?</h3>
-          <p className="text-slate-400 mb-4 font-medium">
-            Ask me anything about your CIC progress and development patterns!
-          </p>
-        </div>
-      )}
+      {/* Chat Container */}
+      <div className="flex-1 px-6 pb-6">
+        <div className="bg-white rounded-lg border border-gray-200 h-full flex flex-col">
+          {/* Messages Area */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`flex items-start gap-3 max-w-3xl ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                    {/* Avatar */}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      message.isUser 
+                        ? 'bg-blue-500' 
+                        : 'bg-white border-2 border-purple-200'
+                    }`}>
+                      {message.isUser ? (
+                        <span className="text-white text-xs font-medium">You</span>
+                      ) : (
+                        <div className="w-5 h-5">
+                          <FlowerIcon />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Message Bubble */}
+                    <div className={`rounded-lg px-4 py-3 ${
+                      message.isUser 
+                        ? 'bg-blue-500 text-white' 
+                        : 'bg-gray-100 text-gray-900'
+                    }`}>
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {message.text}
+                      </div>
+                      <div className={`text-xs mt-2 ${
+                        message.isUser ? 'text-blue-100' : 'text-gray-500'
+                      }`}>
+                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Typing Indicator */}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="flex items-start gap-3 max-w-3xl">
+                    <div className="w-8 h-8 rounded-full bg-white border-2 border-purple-200 flex items-center justify-center flex-shrink-0">
+                      <div className="w-5 h-5">
+                        <FlowerIcon />
+                      </div>
+                    </div>
+                    <div className="bg-gray-100 rounded-lg px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div ref={messagesEndRef} />
+            </div>
+          </div>
 
-      {/* Feature Info */}
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-600">
-        <h3 className="font-semibold text-slate-100 mb-2 flex items-center space-x-2">
-          <span>How I can help with your CIC journey:</span>
-        </h3>
-        <ul className="text-sm text-slate-300 space-y-1 font-medium">
-          <li>• Analyze your learning patterns and growth trends</li>
-          <li>• Identify your strongest areas of development</li>
-          <li>• Suggest focus areas for continued growth</li>
-          <li>• Celebrate your coding milestones and victories</li>
-          <li>• Help you reflect on your personal development journey</li>
-        </ul>
+          {/* Input Area */}
+          <div className="p-6 border-t border-gray-200">
+            <div className="flex items-end gap-3">
+              <div className="flex-1">
+                <textarea
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Ask Bloom AI anything..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+                  style={{minHeight: '44px', maxHeight: '120px'}}
+                  rows={1}
+                />
+              </div>
+              <button
+                onClick={() => handleSendMessage()}
+                disabled={!inputText.trim() || isTyping}
+                className="px-6 py-3 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{backgroundColor: '#736ee1'}}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

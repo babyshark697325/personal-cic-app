@@ -4,6 +4,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
+import FlowerIcon from "@/components/FlowerIcon";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,7 +15,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [activeNav, setActiveNav] = useState('Home');
+  const router = useRouter();
+  const pathname = usePathname();
   
   const navItems = [
     { name: 'Home', href: '/', icon: 'home' },
@@ -93,39 +97,46 @@ export default function RootLayout({
               <ul className="space-y-2">
                 {/* Home */}
                 <li>
-                  <button 
-                    onClick={() => setActiveNav('Home')}
+                  <Link 
+                    href="/"
                     className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors ${
-                      activeNav === 'Home' 
+                      pathname === '/' 
                         ? 'bg-gray-100 text-gray-900 font-medium' 
                         : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     {renderIcon('home')}
                     <span>Home</span>
-                  </button>
+                  </Link>
                 </li>
                 
                 {/* Bloom AI */}
-                <li className="flex items-center space-x-3 px-3 py-2 text-gray-700 text-sm">
-                  <span className="text-yellow-500 text-lg">★</span>
-                  <span>Bloom AI</span>
+                <li>
+                  <Link 
+                    href="/chat"
+                    className="flex items-center space-x-3 px-3 py-2 text-gray-700 text-sm hover:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    <div className="w-4 h-4">
+                      <FlowerIcon />
+                    </div>
+                    <span>Bloom AI</span>
+                  </Link>
                 </li>
                 
                 {/* Rest of navigation items */}
                 {navItems.slice(1).map((item) => (
                   <li key={item.name}>
-                    <button 
-                      onClick={() => setActiveNav(item.name)}
+                    <Link 
+                      href={item.href}
                       className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors ${
-                        activeNav === item.name 
+                        pathname === item.href 
                           ? 'bg-gray-100 text-gray-900 font-medium' 
                           : 'text-gray-700 hover:bg-gray-50'
                       }`}
                     >
                       {renderIcon(item.icon)}
                       <span>{item.name}</span>
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -134,7 +145,7 @@ export default function RootLayout({
                 <div className="flex items-center justify-between px-3 mb-4">
                   <span className="text-sm font-medium text-gray-900">My Projects</span>
                   <button className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700">
-                    <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f7f1ff', color: '#7c3aed'}}>+ Add</span>
+                    <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f0efff', color: '#736ee1'}}>+ Add</span>
                   </button>
                 </div>
                 <ul className="space-y-2">
