@@ -109,7 +109,7 @@ export default function RootLayout({
                 {/* Bloom AI */}
                 <li className="flex items-center space-x-3 px-3 py-2 text-gray-700 text-sm">
                   <span className="text-yellow-500 text-lg">★</span>
-                  <span>Bloom</span>
+                  <span>Bloom AI</span>
                 </li>
                 
                 {/* Rest of navigation items */}
