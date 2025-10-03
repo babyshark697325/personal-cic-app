@@ -68,130 +68,98 @@ export default function Home() {
 
         {/* Dashboard Widget Grid - 2 Column layout */}
         <div className="grid grid-cols-2 gap-6">
-          {/* Left Column - My Tasks Widget */}
+          {/* Left Column - My Tasks and My Goals */}
           <div className="space-y-6">
+            {/* My Tasks Widget */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center">
-                  <svg className="w-3 h-3 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center">
+                    <svg className="w-3 h-3 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>My Tasks</h2>
                 </div>
-                <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>My Tasks</h2>
-              </div>
-              <div className="flex items-center gap-2">
-                <button className="text-gray-600 hover:text-gray-800">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                </button>
-                <button className="text-gray-600 hover:text-gray-800">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0V0m0 4h4M6 21l4-4H6l4-4" />
-                  </svg>
-                </button>
-                <button className="text-gray-600 hover:text-gray-800">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* IN PROGRESS Section */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <button className="text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2 py-1 rounded">IN PROGRESS</span>
-                <span className="text-sm text-gray-600">• 2 tasks</span>
+                <div className="flex items-center gap-2">
+                  <button className="text-gray-600 hover:text-gray-800">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </button>
+                  <button className="text-gray-600 hover:text-gray-800">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0V0m0 4h4M6 21l4-4H6l4-4" />
+                    </svg>
+                  </button>
+                  <button className="text-gray-600 hover:text-gray-800">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
 
-              {/* Column Headers */}
-              <div className="flex text-xs text-gray-500 mb-2 px-4">
-                <div className="flex-1">Name</div>
-                <div className="w-20 text-center">Priority</div>
-                <div className="w-24 text-right">Due date</div>
-              </div>
-
-              {/* Task Items */}
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 p-3 hover:bg-gray-50 rounded">
-                  <button className="text-gray-400">
+              {/* IN PROGRESS Section */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <button className="text-gray-600">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   </button>
-                  <div className="w-3 h-3 bg-teal-400 rounded-full"></div>
-                  <div className="flex-1">
-                    <span className="text-sm text-gray-900">One-on-One Meeting</span>
-                  </div>
-                  <div className="w-20 text-center">
-                    <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">High</span>
-                  </div>
-                  <div className="w-24 text-right">
-                    <span className="text-xs text-red-600">Today</span>
-                  </div>
+                  <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2 py-1 rounded">IN PROGRESS</span>
+                  <span className="text-sm text-gray-600">• 2 tasks</span>
                 </div>
 
-                <div className="flex items-center gap-2 p-3 hover:bg-gray-50 rounded">
-                  <button className="text-gray-400">
+                {/* Column Headers */}
+                <div className="flex text-xs text-gray-500 mb-2 px-4">
+                  <div className="flex-1">Name</div>
+                  <div className="w-20 text-center">Priority</div>
+                  <div className="w-24 text-right">Due date</div>
+                </div>
+
+                {/* Task Items */}
+                <div className="space-y-1">
+                  <div className="flex items-center px-4 py-2 hover:bg-gray-50 rounded-lg group">
+                    <div className="flex-1 flex items-center gap-3">
+                      <input type="checkbox" className="rounded border-gray-300" />
+                      <span className="text-sm text-gray-800">Create wireframe for blog section</span>
+                    </div>
+                    <div className="w-20 flex justify-center">
+                      <span className="inline-block w-2 h-2 bg-orange-400 rounded-full"></span>
+                    </div>
+                    <div className="w-24 text-right text-xs text-gray-500">July 9</div>
+                  </div>
+                  
+                  <div className="flex items-center px-4 py-2 hover:bg-gray-50 rounded-lg group">
+                    <div className="flex-1 flex items-center gap-3">
+                      <input type="checkbox" className="rounded border-gray-300" />
+                      <span className="text-sm text-gray-800">Update project documentation</span>
+                    </div>
+                    <div className="w-20 flex justify-center">
+                      <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                    </div>
+                    <div className="w-24 text-right text-xs text-gray-500">July 8</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* TODO Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <button className="text-gray-600">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                     </svg>
                   </button>
-                  <div className="w-3 h-3 bg-teal-400 rounded-full"></div>
-                  <div className="flex-1">
-                    <span className="text-sm text-gray-900">Send a summary email to stakeholders</span>
-                  </div>
-                  <div className="w-20 text-center">
-                    <span className="text-xs text-gray-600">Low</span>
-                  </div>
-                  <div className="w-24 text-right">
-                    <span className="text-xs text-gray-600">3 days left</span>
-                  </div>
+                  <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded">TODO</span>
+                  <span className="text-sm text-gray-600">• 3 tasks</span>
                 </div>
               </div>
-
-              {/* Add task button */}
-              <button className="flex items-center gap-2 p-3 text-sm text-gray-600 hover:text-gray-800 w-full text-left">
-                <span className="text-lg">+</span>
-                <span>Add task</span>
-              </button>
             </div>
 
-            {/* TO DO Section */}
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <button className="text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <span className="text-sm font-medium text-gray-900">TO DO</span>
-                <span className="text-sm text-gray-600">• 1 task</span>
-              </div>
-            </div>
-
-            {/* UPCOMING Section */}
-            <div>
-              <div className="flex items-center gap-2">
-                <button className="text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded">UPCOMING</span>
-                <span className="text-sm text-gray-600">• 1 tasks</span>
-              </div>
-            </div>
-            </div>
-            
-            {/* My Goals Widget - moved to left column */}
+            {/* My Goals Widget */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>My Goals</h2>
@@ -303,19 +271,19 @@ export default function Home() {
                 {/* Branding launch */}
                 <div className="p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <div className="w-4 h-4 bg-teal-600 rounded transform rotate-45"></div>
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-4 h-4 bg-green-600 rounded transform rotate-45"></div>
                     </div>
                     <div className="flex-1">
                       <h3 className="text-sm text-gray-900 font-medium mb-1">Branding launch</h3>
-                      <p className="text-xs text-gray-500">4 tasks • 9 teammates</p>
+                      <p className="text-xs text-gray-500">8 tasks • 12 teammates</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Calendar Widget - now positioned directly below Projects */}
+            {/* Calendar Widget */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
