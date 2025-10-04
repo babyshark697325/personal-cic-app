@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import FlowerIcon from '@/components/FlowerIcon';
 
 interface Message {
@@ -36,7 +36,7 @@ export default function ChatPage() {
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, newMessage]);
+    setMessages((prev: Message[]) => [...prev, newMessage]);
     setInputText('');
     setIsTyping(true);
 
@@ -48,7 +48,7 @@ export default function ChatPage() {
         isUser: false,
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages((prev: Message[]) => [...prev, aiMessage]);
       setIsTyping(false);
     }, 1000);
   };
@@ -122,7 +122,7 @@ export default function ChatPage() {
         <div className="w-full pt-6 px-6">
           {/* Messages Area */}
           <div className="space-y-3">
-            {messages.map((message) => (
+            {messages.map((message: Message) => (
               <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex items-end gap-2 ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                   {/* Avatar */}
