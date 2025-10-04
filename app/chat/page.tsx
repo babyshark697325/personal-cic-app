@@ -25,58 +25,32 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages]);
 
-  const generateAIResponse = (userMessage: string): string => {
-    const lowerMessage = userMessage.toLowerCase();
-    
-    // Sample question responses
-    if (lowerMessage.includes('work on next') || lowerMessage.includes('what should i work on next')) {
-      return "Based on your current tasks and priorities, I recommend focusing on:\n\n• Your One-on-One Meeting preparation (due today)\n• Complete the client status update (currently at 11% progress)\n• Review the Product launch project tasks\n\nThese items will have the highest impact on your weekly goals. Would you like me to help you prioritize or break down any of these tasks?";
-    }
-    
-    if (lowerMessage.includes('urgent tasks') || lowerMessage.includes('what are my urgent tasks')) {
-      return "Here are your urgent tasks that need immediate attention:\n\n🔴 **High Priority - Due Today:**\n• One-on-One Meeting (scheduled for 10:00 AM)\n\n🟡 **Medium Priority:**\n• Send summary email to stakeholders (3 days left)\n• Update project documentation (63% complete)\n\nI recommend tackling the meeting preparation first, then the stakeholder email. Would you like me to help you plan these tasks?";
-    }
-    
-    if (lowerMessage.includes('tasks created') || lowerMessage.includes('created by me and closed')) {
-      return "Here's a summary of your task creation and completion activity:\n\n📝 **Tasks Created by You:**\n• Total created this week: 5 tasks\n• Created for team members: 3 tasks\n• Personal tasks: 2 tasks\n\n✅ **Tasks Completed:**\n• Completed this week: 12 tasks\n• Completion rate: 85%\n• Average completion time: 2.3 days\n\nYou're showing excellent productivity! Your task creation and completion balance is very healthy.";
-    }
-    
-    // Default response for other queries
-    return "I'm here to help you with your productivity and tasks! I can assist you with:\n\n• Task prioritization and planning\n• Schedule optimization\n• Productivity insights and analytics\n• Goal tracking and progress updates\n• Meeting and deadline management\n\nWhat specific area would you like help with today?";
-  };
-
-  const handleSendMessage = async (text?: string) => {
+  const handleSendMessage = (text?: string) => {
     const messageText = text || inputText;
     if (!messageText.trim()) return;
 
-    // If this is the first message, show the chat interface
-    if (messages.length === 0) {
-      setShowChat(true);
-    }
-
-    const userMessage: Message = {
+    const newMessage: Message = {
       id: messages.length + 1,
       text: messageText,
       isUser: true,
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages(prev => [...prev, newMessage]);
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI thinking time
+    // Simulate AI response
     setTimeout(() => {
-      const aiResponse: Message = {
+      const aiMessage: Message = {
         id: messages.length + 2,
-        text: generateAIResponse(messageText),
+        text: "I'm your AI assistant. How can I help you today?",
         isUser: false,
         timestamp: new Date()
       };
-
-      setMessages(prev => [...prev, aiResponse]);
+      setMessages(prev => [...prev, aiMessage]);
       setIsTyping(false);
-    }, 1500);
+    }, 1000);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -87,75 +61,48 @@ export default function ChatPage() {
   };
 
   const quickQuestions = [
-    "What should I work on next?",
-    "What are my urgent tasks?",
-    "What tasks are created by me and closed?"
+    "What can you do?",
+    "How does this work?",
+    "Tell me about yourself"
   ];
 
   if (!showChat) {
-    // Restored Bloom AI header and logo/text layout, improved suggestion boxes
     return (
-      <div className="bg-white min-h-screen flex flex-col items-center justify-center px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex flex-col items-center justify-center">
-            <div className="mb-6">
-              <div className="w-16 h-16 mx-auto">
-                <FlowerIcon />
-              </div>
-            </div>
-            <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
-              Bloom AI
-            </h1>
-            <p className="text-lg text-gray-600">
-              Your personal productivity assistant
-            </p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 mx-auto mb-6">
+            <FlowerIcon className="w-full h-full text-[#8b7ff5]" />
           </div>
-        </div>
-        {/* Improved Quick Question Cards */}
-        <div className="flex flex-wrap gap-3 justify-center mb-10">
-          {quickQuestions.map((question, index) => (
-            <button
-              key={index}
-              onClick={() => handleSendMessage(question)}
-              className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition shadow-sm"
-            >
-              {question}
-            </button>
-          ))}
-        </div>
-        {/* Input Area centered below suggestions */}
-        <div className="w-full flex justify-center">
-          <div className="max-w-3xl w-full px-6">
-            <div className="bg-gray-50 border border-gray-300 rounded-full shadow-sm px-5 py-2.5 flex items-center gap-3">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Ask anything"
-                className="flex-1 border-0 text-sm focus:outline-none bg-transparent text-gray-800 placeholder-gray-500"
-              />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Bloom AI</h1>
+          <p className="text-gray-600 mb-8">How can I help you today?</p>
+          <div className="space-y-3">
+            {quickQuestions.map((question, index) => (
               <button
-                onClick={() => handleSendMessage()}
-                disabled={!inputText.trim()}
-                className="w-8 h-8 rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
+                key={index}
+                onClick={() => {
+                  setShowChat(true);
+                  handleSendMessage(question);
+                }}
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-full text-left hover:bg-gray-50 transition-colors"
               >
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                </svg>
+                {question}
               </button>
-            </div>
+            ))}
           </div>
+          <button
+            onClick={() => setShowChat(true)}
+            className="mt-6 w-full py-3 bg-[#8b7ff5] text-white rounded-full font-medium hover:bg-[#7a6fe3] transition-colors shadow-md"
+          >
+            Start Chat
+          </button>
         </div>
       </div>
     );
   }
 
-  // Chat interface view
   return (
-    <div className="bg-white min-h-screen flex flex-col">
-      {/* Minimal header */}
+    <div className="bg-white min-h-screen flex flex-col relative">
+      {/* Header */}
       <div className="flex items-center gap-2 px-4 py-4 border-b border-gray-100 shadow-sm">
         <button 
           onClick={() => {
@@ -163,50 +110,48 @@ export default function ChatPage() {
             setMessages([]);
             setInputText('');
           }}
-          className="w-8 h-8 flex items-center justify-center hover:opacity-80 transition-all"
+          className="w-8 h-8 flex items-center justify-center hover:opacity-80 transition-all text-[#8b7ff5]"
         >
-          <FlowerIcon />
+          <FlowerIcon className="w-5 h-5" />
         </button>
         <span className="text-lg font-semibold text-gray-800 tracking-tight">Bloom AI</span>
       </div>
+
       {/* Chat Container */}
       <div className="flex-1 px-0 pb-32 overflow-y-auto">
-        <div className="max-w-2xl mx-auto pt-6 px-6">
+        <div className="w-full pt-6 px-6">
           {/* Messages Area */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {messages.map((message) => (
               <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex items-end gap-2 w-full ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`flex items-end gap-2 ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                   {/* Avatar */}
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${message.isUser ? 'bg-[#736ee1]' : 'bg-gray-100 border border-gray-200'}`}>
-                    {message.isUser ? (
-                      <span className="text-white text-xs font-medium">You</span>
-                    ) : (
-                      <FlowerIcon />
-                    )}
-                  </div>
-                  {/* Message Bubble */}
-                  <div className={`rounded-xl px-4 py-3 shadow-sm ${message.isUser ? 'bg-[#736ee1] text-white' : 'bg-gray-50 text-gray-900 border border-gray-200'} max-w-[65%] sm:max-w-[520px]`}>
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                      {message.text}
+                  {!message.isUser && (
+                    <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                      <FlowerIcon className="w-4 h-4 text-[#8b7ff5]" />
                     </div>
-                    <div className={`text-xs mt-2 ${message.isUser ? 'text-purple-100' : 'text-gray-400'}`}>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                  )}
+                  <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'}`}>
+                    <div className={`rounded-[18px] px-4 py-2.5 ${message.isUser ? 'bg-[#8b7ff5] text-white' : 'bg-gray-100 text-gray-900'}`} style={{ maxWidth: '600px' }}>
+                      <div className="whitespace-pre-wrap text-[15px] leading-[1.4]">
+                        {message.text}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
-            {/* Typing Indicator */}
             {isTyping && (
               <div className="flex justify-start">
-                <div className="flex items-end gap-2 w-full">
-                  <div className="w-7 h-7 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0">
-                    <FlowerIcon />
+                <div className="flex items-end gap-2">
+                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <FlowerIcon className="w-4 h-4 text-[#8b7ff5]" />
                   </div>
-                  <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 shadow-sm max-w-[65%] sm:max-w-[520px]">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  <div className="bg-gray-100 text-gray-900 rounded-[18px] px-4 py-2.5">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                     </div>
                   </div>
                 </div>
@@ -216,25 +161,26 @@ export default function ChatPage() {
           </div>
         </div>
       </div>
-      {/* Input Area fixed at bottom, perfectly centered */}
-      <div className="fixed bottom-0 left-0 w-full flex justify-center pb-8">
-        <div className="max-w-2xl w-full px-6">
-          <div className="bg-white border border-gray-200 rounded-full shadow-lg px-6 py-2 flex items-center gap-3">
-            <textarea
+
+      {/* Input Area */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div className="max-w-3xl mx-auto w-full p-4">
+          <div className="relative flex items-center">
+            <input
+              type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Ask Bloom AI anything..."
-              className="flex-1 px-4 py-3 border-0 rounded-full text-base focus:outline-none bg-transparent resize-none"
-              rows={1}
-              style={{ minHeight: '44px', maxHeight: '120px' }}
+              onKeyPress={handleKeyPress}
+              placeholder="Type a message..."
+              className="flex-1 border border-gray-300 rounded-full px-6 py-3 pr-16 focus:outline-none focus:ring-2 focus:ring-[#8b7ff5] focus:border-transparent text-gray-800 placeholder-gray-400"
             />
             <button
               onClick={() => handleSendMessage()}
-              disabled={!inputText.trim() || isTyping}
-              className="px-6 py-3 text-white text-base font-medium rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              className="absolute right-2 bg-[#8b7ff5] hover:bg-[#7a6fe3] text-white rounded-full p-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Send
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
             </button>
           </div>
         </div>
