@@ -124,24 +124,26 @@ export default function ChatPage() {
             </button>
           ))}
         </div>
-        {/* Input Area fixed at bottom */}
-        <div className="fixed bottom-0 left-0 w-full flex justify-center pb-8">
-          <div className="max-w-2xl w-full px-6">
-            <div className="bg-white border border-gray-200 rounded-full shadow-lg px-6 py-2 flex items-center gap-3">
+        {/* Input Area centered below suggestions */}
+        <div className="w-full flex justify-center">
+          <div className="max-w-3xl w-full px-6">
+            <div className="bg-gray-50 border border-gray-300 rounded-full shadow-sm px-5 py-2.5 flex items-center gap-3">
               <input
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Ask Bloom AI anything..."
-                className="flex-1 px-4 py-3 border-0 rounded-full text-base focus:outline-none bg-transparent"
+                placeholder="Ask anything"
+                className="flex-1 border-0 text-sm focus:outline-none bg-transparent text-gray-800 placeholder-gray-500"
               />
               <button
                 onClick={() => handleSendMessage()}
                 disabled={!inputText.trim()}
-                className="px-6 py-3 text-white text-base font-medium rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                className="w-8 h-8 rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
               >
-                Send
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
               </button>
             </div>
           </div>
