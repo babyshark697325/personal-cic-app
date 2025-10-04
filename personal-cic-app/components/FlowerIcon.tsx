@@ -1,17 +1,13 @@
-import React, { SVGProps } from 'react';
+import React from 'react';
 
-interface FlowerIconProps extends SVGProps<SVGSVGElement> {
-  className?: string;
-}
-
-const FlowerIcon: React.FC<FlowerIconProps> = ({ className = 'w-6 h-6', ...props }) => {
+const FlowerIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
+      {...props}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
-      className={className}
-      {...props}
+      className={`w-6 h-6 ${props.className || ''}`}
     >
       <path
         fillRule="evenodd"
