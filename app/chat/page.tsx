@@ -125,8 +125,8 @@ export default function ChatPage() {
           ))}
         </div>
         {/* Input Area fixed at bottom */}
-        <div className="fixed bottom-0 left-0 w-full flex justify-center pb-6 pointer-events-none">
-          <div className="w-full max-w-xl pointer-events-auto">
+        <div className="fixed bottom-0 left-0 w-full flex pb-6 pointer-events-none">
+          <div className="max-w-xl mx-auto w-full pointer-events-auto">
             <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-4 py-3 flex items-center gap-2">
               <input
                 type="text"
@@ -215,22 +215,22 @@ export default function ChatPage() {
         </div>
       </div>
       {/* Input Area fixed at bottom, perfectly centered */}
-      <div className="fixed bottom-0 left-0 w-full flex justify-center pb-6">
-        <div className="max-w-2xl w-full mx-auto flex justify-center">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-6 py-4 flex items-center gap-3 max-w-full w-full" style={{maxWidth: '600px'}}>
+      <div className="fixed bottom-0 left-0 w-full pb-6">
+        <div className="max-w-2xl mx-auto w-full">
+          <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-6 py-4 flex items-center gap-3 w-full">
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Ask Bloom AI anything..."
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-base focus:outline-none bg-gray-50 resize-none"
+              className="w-full px-6 py-3 border border-gray-200 rounded-full text-base focus:outline-none bg-gray-50 resize-none"
               rows={1}
               style={{ minHeight: '44px', maxHeight: '120px' }}
             />
             <button
               onClick={() => handleSendMessage()}
               disabled={!inputText.trim() || isTyping}
-              className="px-5 py-2 text-white text-base font-medium rounded-lg bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 text-white text-base font-medium rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Send
             </button>
