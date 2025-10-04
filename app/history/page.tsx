@@ -112,7 +112,7 @@ export default function HistoryPage() {
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold text-slate-100">My CIC Program Timeline</h1>
         <p className="text-slate-300 font-medium">
-          Look back at your coding progress, celebrate your growth, and see how far you've come
+          Look back at your coding progress, celebrate your growth, and see how far you&apos;ve come
         </p>
       </div>
 

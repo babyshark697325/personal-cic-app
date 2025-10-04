@@ -269,7 +269,7 @@ export default function CalendarPage() {
                   <span className="text-sm font-medium text-gray-900">{events.length}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Today's Events</span>
+                  <span className="text-sm text-gray-600">Today&apos;s Events</span>
                   <span className="text-sm font-medium text-gray-900">
                     {events.filter(event => event.date === '07').length}
                   </span>

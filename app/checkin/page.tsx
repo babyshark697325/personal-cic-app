@@ -116,7 +116,7 @@ export default function CheckinPage() {
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold text-slate-100">Daily CIC Reflection</h1>
         <p className="text-slate-300 font-medium">
-          Take a moment to reflect on today's CIC program check-in and personal growth
+          Take a moment to reflect on today&apos;s CIC program check-in and personal growth
         </p>
       </div>
 

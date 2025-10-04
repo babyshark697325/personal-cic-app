@@ -159,7 +159,7 @@ export default function Home() {
               href="/checkin"
               className="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold hover:bg-indigo-50 transition-colors flex items-center space-x-2 justify-center sm:justify-start"
             >
-              <span>Today's reflection</span>
+              <span>Today&apos;s reflection</span>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -192,7 +192,7 @@ export default function Home() {
               {stat.isStreak ? (
                 <>
                   <span>{stat.value}</span>
-                  <span className="text-lg text-slate-400">day{stat.value !== 1 ? 's' : ''}</span>
+                  <span className="text-lg text-slate-400">day{stat.value !== 1 ? '&apos;s' : ''}</span>
                 </>
               ) : (
                 <span>{stat.value}</span>
