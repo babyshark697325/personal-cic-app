@@ -1,10 +1,13 @@
-import { SVGProps } from 'react';
+import { SVGProps, forwardRef } from 'react';
 
 interface FlowerIconProps extends SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-const FlowerIcon = ({ className = '', ...props }: FlowerIconProps) => {
+const FlowerIcon = forwardRef<SVGSVGElement, FlowerIconProps>(({ 
+  className = '', 
+  ...props 
+}, ref) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -20,6 +23,8 @@ const FlowerIcon = ({ className = '', ...props }: FlowerIconProps) => {
       />
     </svg>
   );
-};
+});
+
+FlowerIcon.displayName = 'FlowerIcon';
 
 export default FlowerIcon;
