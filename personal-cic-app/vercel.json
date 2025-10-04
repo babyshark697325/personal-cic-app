@@ -3,13 +3,34 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/next"
+      "use": "@vercel/next",
+      "config": {
+        "distDir": ".next",
+        "includeFiles": [
+          "public/**",
+          "app/**",
+          "components/**",
+          "styles/**",
+          "next.config.js",
+          "next-env.d.ts",
+          "tsconfig.json"
+        ]
+      }
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
 }

@@ -2,26 +2,66 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // Enable static exports for Vercel
   output: 'standalone',
-  // Ensure proper image optimization
+  
+  // Image optimization
   images: {
-    unoptimized: true, // Disable image optimization if not using Vercel's image optimization
+    unoptimized: true,
+    domains: [],
   },
-  // Set the base path if your app is not served from the root
-  // basePath: '/your-base-path',
-  // Enable TypeScript type checking during build
+  
+  // Webpack configuration
+  webpack: (config, { isServer }) => {
+    // Important: return the modified config
+    return config;
+  },
+  
+  // TypeScript configuration
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
     ignoreBuildErrors: false,
   },
-  // Enable ESLint during build
+  
+  // ESLint configuration
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: false,
   },
-}
+  
+  // Enable React 18 concurrent features
+  experimental: {
+    reactRoot: true,
+  },
+  
+  // Add any environment variables that should be available at build time
+  env: {
+    // Add your environment variables here
+  },
+  
+  // Enable source maps in production for better error tracking
+  productionBrowserSourceMaps: true,
+  
+  // Configure page extensions
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+  
+  // Add headers to all responses
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+    ];
+  },
+};
