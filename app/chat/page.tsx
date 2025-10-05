@@ -14,7 +14,7 @@ interface Message {
   data?: {
     type: 'project' | 'task' | 'reminder' | 'goal';
     action: 'add' | 'update' | 'delete';
-    item: any;
+    item: unknown;
   };
 }
 
