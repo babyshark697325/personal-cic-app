@@ -182,24 +182,24 @@ export default function ChatPage() {
       </div>
 
       {/* Input Area */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-        <div className="max-w-3xl mx-auto w-full p-4">
-          <div className="relative flex items-center">
+      <div className="fixed bottom-0 left-0 w-full flex justify-center pb-6">
+        <div className="max-w-2xl w-full mx-auto flex justify-center">
+          <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-6 py-4 flex items-center gap-3 max-w-full w-full" style={{maxWidth: '600px'}}>
             <input
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type a message..."
-              className="flex-1 border border-gray-300 rounded-full px-6 py-3 pr-16 focus:outline-none focus:ring-2 focus:ring-[#8b7ff5] focus:border-transparent text-gray-800 placeholder-gray-400"
+              className="w-full px-6 py-3 border border-gray-200 rounded-full text-base focus:outline-none bg-gray-50"
+              style={{ minHeight: '44px', maxHeight: '120px' }}
             />
             <button
               onClick={() => handleSendMessage()}
-              className="absolute right-2 bg-[#8b7ff5] hover:bg-[#7a6fe3] text-white rounded-full p-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              disabled={!inputText.trim() || isTyping}
+              className="px-6 py-3 text-white text-base font-medium rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
+              Send
             </button>
           </div>
         </div>
