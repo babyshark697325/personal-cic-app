@@ -61,40 +61,59 @@ export default function ChatPage() {
   };
 
   const quickQuestions = [
-    "What can you do?",
-    "How does this work?",
-    "Tell me about yourself"
+  "What should I work on next?",
+  "What are my urgent tasks?",
+  "What tasks are created by me and closed?"
   ];
 
   if (!showChat) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-        <div className="text-center max-w-md">
-          <div className="w-16 h-16 mx-auto mb-6">
-            <FlowerIcon className="w-full h-full text-[#8b7ff5]" />
+      <div className="bg-white min-h-screen flex flex-col items-center justify-center px-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex flex-col items-center justify-center">
+            <div className="mb-6">
+              <div className="w-16 h-16 mx-auto">
+                <FlowerIcon />
+              </div>
+            </div>
+            <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>Bloom AI</h1>
+            <p className="text-lg text-gray-600">Your personal productivity assistant</p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Bloom AI</h1>
-          <p className="text-gray-600 mb-8">How can I help you today?</p>
-          <div className="space-y-3">
-            {quickQuestions.map((question, index) => (
+        </div>
+        {/* Improved Quick Question Cards - horizontal layout */}
+        <div className="flex flex-wrap gap-3 justify-center mb-10">
+          {quickQuestions.map((question, index) => (
+            <button
+              key={index}
+              onClick={() => handleSendMessage(question)}
+              className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition shadow-sm"
+            >
+              {question}
+            </button>
+          ))}
+        </div>
+        {/* Input Area fixed at bottom */}
+        <div className="fixed bottom-0 left-0 w-full flex justify-center pb-6 pointer-events-none">
+          <div className="w-full max-w-xl pointer-events-auto">
+            <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-4 py-3 flex items-center gap-2">
+              <input
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask Bloom AI anything..."
+                className="w-full px-3 py-2 border-0 rounded-lg text-sm focus:outline-none bg-gray-50"
+              />
               <button
-                key={index}
-                onClick={() => {
-                  setShowChat(true);
-                  handleSendMessage(question);
-                }}
-                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-full text-left hover:bg-gray-50 transition-colors"
+                onClick={() => handleSendMessage()}
+                disabled={!inputText.trim()}
+                className="px-4 py-2 text-white text-sm font-medium rounded-lg bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {question}
+                Send
               </button>
-            ))}
+            </div>
           </div>
-          <button
-            onClick={() => setShowChat(true)}
-            className="mt-6 w-full py-3 bg-[#8b7ff5] text-white rounded-full font-medium hover:bg-[#7a6fe3] transition-colors shadow-md"
-          >
-            Start Chat
-          </button>
         </div>
       </div>
     );
