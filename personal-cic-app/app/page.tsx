@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import TasksWidget from "../components/TasksWidget";
 
 export default function Home() {
   const [tasks, setTasks] = useState([
@@ -87,7 +88,6 @@ export default function Home() {
             WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)'
           }}
         ></div>
-      </div>
 
       <div className="px-8 pt-8 pb-8 relative">
         {/* Dashboard Header Section */}
@@ -152,164 +152,16 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-6">
           {/* Left Column - My Tasks Widget */}
           <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
-                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                  <path d="m16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                </svg>
-                <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>My Tasks</h2>
-              </div>
-              <div className="flex items-center gap-2">
-                <button className="text-gray-600 hover:text-gray-800">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"/>
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                  </svg>
-                </button>
-                <button className="text-gray-600 hover:text-gray-800">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0V0m0 4h4M6 21l4-4H6l4-4" />
-                  </svg>
-                </button>
-                <button className="text-gray-600 hover:text-gray-800">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* IN PROGRESS Section */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <button className="text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#ace8eb'}}>IN PROGRESS</span>
-                <span className="text-sm text-gray-600">• {tasks.filter(task => task.status === 'in-progress').length} tasks</span>
-              </div>
-
-              {/* Column Headers */}
-              <div className="flex text-xs text-gray-500 mb-2 px-4">
-                <div className="flex-1">Name</div>
-                <div className="w-20 text-center">Priority</div>
-                <div className="w-24 text-right">Due date</div>
-              </div>
-
-              {/* Task Items */}
-              <div className="divide-y divide-gray-100">
-                {tasks.filter(task => task.status === 'in-progress').map((task) => (
-                  <div key={task.id} className="flex items-center gap-2 p-3 hover:bg-gray-50">
-                    <button 
-                      onClick={() => toggleTaskCompletion(task.id)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      {task.completed ? (
-                        <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </button>
-                    <div className="w-3 h-3 rounded-sm" style={{backgroundColor: '#a8edea'}}></div>
-                    <div className="flex-1">
-                      <span className={`text-sm ${task.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                        {task.name}
-                      </span>
-                    </div>
-                    <div className="w-20 text-center">
-                      <span className="text-black text-xs px-2 py-1 rounded" style={{
-                        backgroundColor: task.priority === 'High' ? '#fec2c6' : 
-                                       task.priority === 'Medium' ? '#fef3c7' : '#f4f6f8'
-                      }}>
-                        {task.priority}
-                      </span>
-                    </div>
-                    <div className="w-24 text-right">
-                      <span className={`text-xs ${task.dueDate === 'Today' ? 'text-red-600' : 'text-black'}`}>
-                        {task.dueDate}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Add task button */}
-              <div className="border-t border-gray-100">
-                {!showTaskForm ? (
-                  <button 
-                    onClick={() => setShowTaskForm(true)}
-                    className="flex items-center gap-2 p-3 text-sm text-gray-600 hover:text-gray-800 w-full text-left"
-                  >
-                    <span className="text-lg">+</span>
-                    <span>Add task</span>
-                  </button>
-                ) : (
-                  <div className="p-3 space-y-2">
-                    <input
-                      type="text"
-                      value={newTaskName}
-                      onChange={(e) => setNewTaskName(e.target.value)}
-                      placeholder="Enter task name..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      autoFocus
-                      onKeyPress={(e) => e.key === 'Enter' && addTask()}
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={addTask}
-                        className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
-                      >
-                        Add
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowTaskForm(false);
-                          setNewTaskName('');
-                        }}
-                        className="px-3 py-1 bg-gray-300 text-gray-700 text-xs rounded hover:bg-gray-400"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* TO DO Section */}
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <button className="text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#f4f6f8'}}>TO DO</span>
-                <span className="text-sm text-gray-600">• {tasks.filter(task => task.status === 'todo').length} task</span>
-              </div>
-            </div>
-
-            {/* UPCOMING Section */}
-            <div>
-              <div className="flex items-center gap-2">
-                <button className="text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#f8d4ae'}}>UPCOMING</span>
-                <span className="text-sm text-gray-600">• {tasks.filter(task => task.status === 'upcoming').length} tasks</span>
-              </div>
-            </div>
-            </div>
+            <TasksWidget
+              tasks={tasks}
+              showTaskForm={showTaskForm}
+              newTaskName={newTaskName}
+              toggleTaskCompletion={toggleTaskCompletion}
+              setShowTaskForm={setShowTaskForm}
+              setNewTaskName={setNewTaskName}
+              addTask={addTask}
+            />
+          </div>
             
             {/* My Goals Widget - moved to left column */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
