@@ -17,6 +17,40 @@ export default function ChatPage() {
   const [showChat, setShowChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Personal assistant responses
+  const ruleResponses: {[key: string]: string} = {
+    'hello': 'Hey there! What would you like to do today?',
+    'hi': 'Hi! How can I help?',
+    'hey': 'Hey! What\'s on your mind?',
+    'help': 'I can help you with:\n• Your schedule\n• Notes and reminders\n• General questions\n• Or just chat!',
+    'thank': 'No problem! What else can I help with?',
+    'thanks': 'Anytime! Need anything else?',
+    'bye': 'See you later!',
+    'how are you': 'I\'m doing well, thanks for asking! How about you?',
+    'what\'s up': 'Not much, just here to help! What\'s up with you?',
+    'lol': 'Glad you\'re laughing!',
+    'haha': 'I try to be funny sometimes!',
+    'remind': 'I can help with that! What would you like me to remind you about?',
+    'note': 'Got it! What would you like me to note down?',
+    'schedule': 'Let me check your schedule. What day are you asking about?',
+    'default': 'I\'m not sure about that one. Try asking about your schedule, notes, or just chat!'
+  };
+
+  // Function to get response based on user input
+  const getResponse = (userInput: string): string => {
+    const input = userInput.toLowerCase().trim();
+    
+    // Check for matching rules
+    for (const [key, response] of Object.entries(ruleResponses)) {
+      if (input.includes(key)) {
+        return response;
+      }
+    }
+    
+    // Default response if no match found
+    return ruleResponses['default'];
+  };
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -42,17 +76,18 @@ export default function ChatPage() {
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI response
+    // Get and show rule-based response
     setTimeout(() => {
-      const aiMessage: Message = {
+      const response = getResponse(messageText);
+      const botMessage: Message = {
         id: Date.now() + 1,
-        text: "I'm your AI assistant. How can I help you today?",
+        text: response,
         isUser: false,
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [...prev, botMessage]);
       setIsTyping(false);
-    }, 1000);
+    }, 800);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -65,7 +100,7 @@ export default function ChatPage() {
   const quickQuestions = [
     "What should I work on next?",
     "What are my urgent tasks?",
-    "What tasks are created by me and closed?"
+    "What's on my schedule today?"
   ];
 
   if (!showChat) {
