@@ -18,96 +18,198 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
+  const handleSendMessage = (text?: string) => {
+    const messageText = text || inputText;
+    if (!messageText.trim()) return;
 
-    // Add user message
-    const userMessage: Message = {
+    setShowChat(true);
+    
+    const newMessage: Message = {
       id: Date.now(),
-      text: inputText,
+      text: messageText,
       isUser: true,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, newMessage]);
     setInputText('');
     setIsTyping(true);
 
-    // Simulate bot response
+    // Simulate AI response
     setTimeout(() => {
-      const botMessage: Message = {
+      const aiMessage: Message = {
         id: Date.now() + 1,
-        text: `I received: "${inputText}"`,
+        text: "I'm your AI assistant. How can I help you today?",
         isUser: false,
-        timestamp: new Date(),
+        timestamp: new Date()
       };
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages(prev => [...prev, aiMessage]);
       setIsTyping(false);
     }, 1000);
   };
 
-  return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      <header className="bg-white shadow-sm p-4">
-        <h1 className="text-xl font-semibold text-gray-800">Chat</h1>
-      </header>
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey && inputText.trim()) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                message.isUser
-                  ? 'bg-blue-500 text-white rounded-br-none'
-                  : 'bg-gray-200 text-gray-800 rounded-bl-none'
-              }`}
-            >
-              <p className="text-sm">{message.text}</p>
-              <p className="text-xs opacity-70 mt-1">
-                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </p>
+  const quickQuestions = [
+    "What should I work on next?",
+    "What are my urgent tasks?",
+    "What tasks are created by me and closed?"
+  ];
+
+  if (!showChat) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 mx-auto mb-6">
+            <FlowerIcon className="w-full h-full text-[#8b7ff5]" />
+          </div>
+          <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>Bloom AI</h1>
+          <p className="text-lg text-gray-600 mb-8">Your personal productivity assistant</p>
+          <div className="flex flex-wrap gap-3 justify-center mb-10">
+            {quickQuestions.map((question, index) => (
+              <button
+                key={index}
+                onClick={() => handleSendMessage(question)}
+                className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition shadow-sm"
+              >
+                {question}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-6 px-4 pl-[280px]">
+          <div className="w-full max-w-2xl mx-auto">
+            <div className="bg-white border border-gray-200 rounded-full shadow-lg px-4 py-1 flex items-center gap-2 w-full">
+              <input
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && inputText.trim()) {
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="Ask Bloom AI anything..."
+                className="w-full px-4 py-3 border-0 rounded-full text-base text-gray-900 focus:outline-none bg-white placeholder-gray-400"
+              />
+              <button
+                onClick={() => handleSendMessage()}
+                disabled={!inputText.trim()}
+                className="w-8 h-8 flex items-center justify-center text-white text-sm font-medium rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
           </div>
-        ))}
-        {isTyping && (
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </main>
+        </div>
+      </div>
+    );
+  }
 
-      <footer className="bg-white border-t p-4">
-        <form onSubmit={handleSubmit} className="flex space-x-2">
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Type a message..."
-            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            disabled={isTyping}
-          >
-            Send
-          </button>
-        </form>
-      </footer>
+  return (
+    <div className="bg-white min-h-screen flex flex-col relative">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-4 py-3">
+        <button 
+          onClick={() => {
+            setShowChat(false);
+            setMessages([]);
+            setInputText('');
+          }}
+          className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 rounded-full transition-all text-[#8b7ff5]"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+        <span className="text-base font-medium text-gray-700">Bloom AI</span>
+      </div>
+
+      {/* Chat Container */}
+      <div className="flex-1 px-0 pb-32 overflow-y-auto">
+        <div className="w-full pt-6 px-6">
+          {/* Messages Area */}
+          <div className="space-y-3">
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                <div className={`flex items-end gap-2 ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                  {/* Avatar */}
+                  {!message.isUser && (
+                    <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                      <FlowerIcon className="w-4 h-4 text-[#8b7ff5]" />
+                    </div>
+                  )}
+                  <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'}`}>
+                    <div 
+                      className={`rounded-[18px] px-4 py-2.5 ${message.isUser ? 'bg-[#8b7ff5] text-white' : 'bg-gray-100 text-gray-900'}`} 
+                      style={{ maxWidth: '600px' }}
+                    >
+                      <div className="whitespace-pre-wrap text-[15px] leading-[1.4]">
+                        {message.text}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="flex items-end gap-2">
+                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <FlowerIcon className="w-4 h-4 text-[#8b7ff5]" />
+                  </div>
+                  <div className="bg-gray-100 text-gray-900 rounded-[18px] px-4 py-2.5">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+      </div>
+
+      {/* Input Area */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white">
+        <div className="max-w-3xl mx-auto w-full p-4">
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type a message..."
+              className="flex-1 border border-gray-200 rounded-full px-6 py-3 pr-16 focus:outline-none focus:ring-2 focus:ring-[#8b7ff5] focus:border-transparent text-gray-800 placeholder-gray-400"
+            />
+            <button
+              onClick={() => handleSendMessage()}
+              className="absolute right-2 bg-[#8b7ff5] hover:bg-[#7a6fe3] text-white rounded-full p-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
