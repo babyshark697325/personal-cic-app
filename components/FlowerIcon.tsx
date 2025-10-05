@@ -1,22 +1,62 @@
-import React from "react";
+import { SVGProps, forwardRef } from 'react';
+
+interface FlowerIconProps extends SVGProps<SVGSVGElement> {
+  className?: string;
+}
+
+
 
 interface FlowerIconProps {
   className?: string;
 }
 
-const FlowerIcon: React.FC<FlowerIconProps> = ({ className }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 32 32"
-    fill="currentColor"
-    className={className}
-  >
-    <circle cx="16" cy="16" r="6" fill="#8b7ff5" />
-    <path
-      d="M16 2c2.5 0 4.5 2 4.5 4.5S18.5 11 16 11s-4.5-2-4.5-4.5S13.5 2 16 2zm0 20c2.5 0 4.5 2 4.5 4.5S18.5 31 16 31s-4.5-2-4.5-4.5S13.5 22 16 22zm14-6c0 2.5-2 4.5-4.5 4.5S21 18.5 21 16s2-4.5 4.5-4.5S30 13.5 30 16zm-24 0c0 2.5-2 4.5-4.5 4.5S1 18.5 1 16s2-4.5 4.5-4.5S6 13.5 6 16zm19.07-10.07c1.77 1.77 1.77 4.63 0 6.4-1.77 1.77-4.63 1.77-6.4 0-1.77-1.77-1.77-4.63 0-6.4 1.77-1.77 4.63-1.77 6.4 0zm-12.14 0c1.77 1.77 1.77 4.63 0 6.4-1.77 1.77-4.63 1.77-6.4 0-1.77-1.77-1.77-4.63 0-6.4 1.77-1.77 4.63-1.77 6.4 0zm12.14 12.14c1.77 1.77 1.77 4.63 0 6.4-1.77 1.77-4.63 1.77-6.4 0-1.77-1.77-1.77-4.63 0-6.4 1.77-1.77 4.63-1.77 6.4 0zm-12.14 0c1.77 1.77 1.77 4.63 0 6.4-1.77 1.77-4.63 1.77-6.4 0-1.77-1.77-1.77-4.63 0-6.4 1.77-1.77 4.63-1.77 6.4 0z"
-      fill="#8b7ff5"
-    />
-  </svg>
-);
+export default function FlowerIcon({ className }: FlowerIconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 200 200"
+      width="100%"
+      height="100%"
+      className={className}
+      style={{ filter: 'drop-shadow(0 4px 12px rgba(115, 110, 225, 0.3))' }}
+    >
+      {/* Define mask */}
+      <defs>
+        {/* Mask = 5 petals + star cutout */}
+        <mask id="flowerMask">
+          {/* Draw 5 petals in a circle */}
+          {Array.from({ length: 5 }).map((_, i) => {
+            const angle = (i * 72 * Math.PI) / 180; // 72° apart
+            const cx = 100 + 40 * Math.cos(angle);
+            const cy = 100 + 40 * Math.sin(angle);
+            return <circle key={i} cx={cx} cy={cy} r="44" fill="white" />;
+          })}
 
-export default FlowerIcon;
+          {/* Curved diamond star cutout in the middle */}
+          <path
+            fill="black"
+            d="M 100 75
+               Q 105 85, 110 90
+               Q 115 95, 125 100
+               Q 115 105, 110 110
+               Q 105 115, 100 125
+               Q 95 115, 90 110
+               Q 85 105, 75 100
+               Q 85 95, 90 90
+               Q 95 85, 100 75 Z"
+          />
+        </mask>
+      </defs>
+
+      {/* Solid color flower shape */}
+      <rect
+        x="0"
+        y="0"
+        width="200"
+        height="200"
+        fill="#736ee1"
+        mask="url(#flowerMask)"
+      />
+    </svg>
+  );
+}
