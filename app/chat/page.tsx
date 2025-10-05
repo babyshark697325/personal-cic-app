@@ -18,192 +18,96 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = (text?: string) => {
-    const messageText = text || inputText;
-    if (!messageText.trim()) return;
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
 
-    const newMessage: Message = {
-      id: messages.length + 1,
-      text: messageText,
+    // Add user message
+    const userMessage: Message = {
+      id: Date.now(),
+      text: inputText,
       isUser: true,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages((prev: Message[]) => [...prev, newMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI response
+    // Simulate bot response
     setTimeout(() => {
-      const aiMessage: Message = {
-        id: messages.length + 2,
-        text: "I'm your AI assistant. How can I help you today?",
+      const botMessage: Message = {
+        id: Date.now() + 1,
+        text: `I received: "${inputText}"`,
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages((prev: Message[]) => [...prev, aiMessage]);
+      setMessages((prev) => [...prev, botMessage]);
       setIsTyping(false);
     }, 1000);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey && inputText.trim()) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  const quickQuestions = [
-  "What should I work on next?",
-  "What are my urgent tasks?",
-  "What tasks are created by me and closed?"
-  ];
-
-  if (!showChat) {
-    return (
-      <div className="bg-white min-h-screen flex flex-col items-center justify-center px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex flex-col items-center justify-center">
-            <div className="mb-6">
-              <div className="w-16 h-16 mx-auto">
-                <FlowerIcon />
-              </div>
-            </div>
-            <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>Bloom AI</h1>
-            <p className="text-lg text-gray-600">Your personal productivity assistant</p>
-          </div>
-        </div>
-        {/* Improved Quick Question Cards - horizontal layout */}
-        <div className="flex flex-wrap gap-3 justify-center mb-10">
-          {quickQuestions.map((question, index) => (
-            <button
-              key={index}
-              onClick={() => handleSendMessage(question)}
-              className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition shadow-sm"
-            >
-              {question}
-            </button>
-          ))}
-        </div>
-        {/* Input Area fixed at bottom */}
-        <div className="fixed bottom-0 left-0 w-full flex justify-center pb-6 pointer-events-none">
-          <div className="w-full max-w-xl pointer-events-auto">
-            <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-4 py-3 flex items-center gap-2">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask Bloom AI anything..."
-                className="w-full px-3 py-2 border-0 rounded-lg text-sm focus:outline-none bg-gray-50"
-              />
-              <button
-                onClick={() => handleSendMessage()}
-                disabled={!inputText.trim()}
-                className="px-4 py-2 text-white text-sm font-medium rounded-lg bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Send
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-white min-h-screen flex flex-col relative">
-      {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-4 border-b border-gray-100 shadow-sm">
-        <button 
-          onClick={() => {
-            setShowChat(false);
-            setMessages([]);
-            setInputText('');
-          }}
-          className="w-8 h-8 flex items-center justify-center hover:opacity-80 transition-all text-[#8b7ff5]"
-        >
-          <FlowerIcon className="w-5 h-5" />
-        </button>
-        <span className="text-lg font-semibold text-gray-800 tracking-tight">Bloom AI</span>
-      </div>
+    <div className="flex flex-col h-screen bg-gray-50">
+      <header className="bg-white shadow-sm p-4">
+        <h1 className="text-xl font-semibold text-gray-800">Chat</h1>
+      </header>
 
-      {/* Chat Container */}
-      <div className="flex-1 px-0 pb-32 overflow-y-auto">
-        <div className="w-full pt-6 px-6">
-          {/* Messages Area */}
-          <div className="space-y-3">
-            {messages.map((message: Message) => (
-              <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex items-end gap-2 ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-                  {/* Avatar */}
-                  {!message.isUser && (
-                    <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                      <FlowerIcon className="w-4 h-4 text-[#8b7ff5]" />
-                    </div>
-                  )}
-                  <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'}`}>
-                    <div className={`rounded-[18px] px-4 py-2.5 ${message.isUser ? 'bg-[#8b7ff5] text-white' : 'bg-gray-100 text-gray-900'}`} style={{ maxWidth: '600px' }}>
-                      <div className="whitespace-pre-wrap text-[15px] leading-[1.4]">
-                        {message.text}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="flex items-end gap-2">
-                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                    <FlowerIcon className="w-4 h-4 text-[#8b7ff5]" />
-                  </div>
-                  <div className="bg-gray-100 text-gray-900 rounded-[18px] px-4 py-2.5">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
-      </div>
-
-      {/* Input Area */}
-      <div className="fixed bottom-0 left-0 w-full flex justify-center pb-6">
-        <div className="max-w-2xl w-full mx-auto flex justify-center">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-6 py-4 flex items-center gap-3 max-w-full w-full" style={{maxWidth: '600px'}}>
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type a message..."
-              className="w-full px-6 py-3 border border-gray-200 rounded-full text-base focus:outline-none bg-gray-50"
-              style={{ minHeight: '44px', maxHeight: '120px' }}
-            />
-            <button
-              onClick={() => handleSendMessage()}
-              disabled={!inputText.trim() || isTyping}
-              className="px-6 py-3 text-white text-base font-medium rounded-full bg-[#736ee1] hover:bg-[#5a54c4] transition disabled:opacity-50 disabled:cursor-not-allowed"
+      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                message.isUser
+                  ? 'bg-blue-500 text-white rounded-br-none'
+                  : 'bg-gray-200 text-gray-800 rounded-bl-none'
+              }`}
             >
-              Send
-            </button>
+              <p className="text-sm">{message.text}</p>
+              <p className="text-xs opacity-70 mt-1">
+                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
+        ))}
+        {isTyping && (
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </main>
+
+      <footer className="bg-white border-t p-4">
+        <form onSubmit={handleSubmit} className="flex space-x-2">
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Type a message..."
+            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={isTyping}
+          >
+            Send
+          </button>
+        </form>
+      </footer>
     </div>
   );
 }
