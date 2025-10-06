@@ -34,8 +34,10 @@ export interface Goal {
   dueDate?: string;
   targetDate?: Date;
   completed: boolean;
-  progress: number; // 0-100
+  progress: number;
+  priority: 'low' | 'medium' | 'high';
   projectId?: string;
+  category?: string; // Added for UI pill
   createdAt: Date;
   updatedAt: Date;
 }

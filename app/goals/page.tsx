@@ -2,35 +2,46 @@
 
 import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import { Goal as GoalType } from '../../types';
+import { Goal } from '../../types';
+import { Plus, ChevronLeft, Check, Calendar as CalendarIcon } from 'lucide-react';
 
 export default function GoalsPage() {
   const { goals, addGoal, updateGoal } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newGoal, setNewGoal] = useState({
+  
+  // Initialize new goal with default values
+  const initialNewGoal = {
     title: '',
-    dueDate: '',
+    description: '',
+    dueDate: new Date().toISOString().split('T')[0],
     progress: 0,
-    description: ''
-  });
+    priority: 'medium' as const,
+    completed: false
+  };
+  
+  const [newGoal, setNewGoal] = useState<Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>>(initialNewGoal);
 
   // Sample data that matches the screenshot
-  const sampleGoals: GoalType[] = [
+  const sampleGoals: Goal[] = [
     {
       id: '1',
       title: 'Complete project proposal',
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       progress: 20,
       completed: false,
+      priority: 'high',
+      description: 'Finish the project proposal document and send for review',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       id: '2',
       title: 'Design new logo',
-      dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      progress: 40,
+      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      progress: 75,
       completed: false,
+      priority: 'medium',
+      description: 'Create initial logo concepts for the new brand',
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -38,47 +49,67 @@ export default function GoalsPage() {
       id: '3',
       title: 'Update website content',
       dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      progress: 60,
+      progress: 10,
       completed: false,
+      priority: 'high',
+      description: 'Refresh the homepage and about page content',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: '4',
+      title: 'Team building workshop',
+      dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      progress: 0,
+      completed: false,
+      priority: 'low',
+      description: 'Plan and organize team building activities',
       createdAt: new Date(),
       updatedAt: new Date()
     }
   ];
 
   // Use sample data if no goals exist
-  const displayGoals: GoalType[] = goals.length > 0 ? goals : sampleGoals;
+  const displayGoals = goals.length > 0 ? [...goals] : [...sampleGoals];
   
   // Calculate overall progress
   const completedGoals = displayGoals.filter(goal => goal.completed).length;
   const totalGoals = displayGoals.length;
   const progressPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
-  const handleAddGoal = (e: React.FormEvent) => {
+  // Filter state
+  const [filter, setFilter] = useState<'all' | 'in-progress' | 'completed' | 'upcoming'>('all');
+  const filteredGoals = displayGoals.filter(goal => {
+    if (filter === 'all') return true;
+    if (filter === 'in-progress') return !goal.completed && (!goal.dueDate || new Date(goal.dueDate) >= new Date());
+    if (filter === 'completed') return goal.completed;
+    if (filter === 'upcoming') return !goal.completed && goal.dueDate && new Date(goal.dueDate) > new Date();
+    return true;
+  });
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newGoal.title.trim()) return;
     
-    const goalToAdd: GoalType = {
+    // Create a new goal with all required properties
+    const newGoalWithId: Goal = {
+      ...newGoal,
       id: Date.now().toString(),
-      title: newGoal.title,
-      description: newGoal.description,
-      dueDate: newGoal.dueDate || undefined,
-      progress: 0,
-      completed: false,
       createdAt: new Date(),
       updatedAt: new Date(),
+      completed: false,
+      progress: 0
     };
     
-    addGoal(goalToAdd);
-    setNewGoal({
-      title: '',
-      dueDate: '',
-      progress: 0,
-      description: ''
-    });
+    addGoal(newGoalWithId);
+    
+    // Reset form
+    setNewGoal(initialNewGoal);
     setIsModalOpen(false);
   };
 
-  const toggleComplete = (goal: GoalType): void => {
+  const toggleComplete = (goal: Goal): void => {
     updateGoal(goal.id, { 
       completed: !goal.completed,
       progress: goal.completed ? 0 : 100,
@@ -86,7 +117,7 @@ export default function GoalsPage() {
     });
   };
 
-  const updateProgress = (goal: GoalType, newProgress: number): void => {
+  const updateProgress = (goal: Goal, newProgress: number): void => {
     updateGoal(goal.id, { 
       progress: newProgress,
       completed: newProgress === 100,
@@ -104,175 +135,152 @@ export default function GoalsPage() {
     }
   };
 
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
   return (
-  <main className="max-w-md mx-auto p-6">
+    <main className="px-8 pt-8 pb-8">
       {/* Header */}
-      <div className="flex items-center mb-8">
-        <button className="p-2 -ml-2">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 18L9 12L15 6" stroke="#1F2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        <h1 className="text-xl font-semibold text-gray-900 flex-1 text-center -ml-6">Goals</h1>
-      </div>
-
-      {/* Progress Section */}
-      <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
-        <div className="flex justify-between items-center mb-6">
-          <span className="text-sm font-medium text-[#9333EA]">Goals Progress</span>
-          <span className="text-sm font-semibold text-[#9333EA]">{progressPercentage}%</span>
-        </div>
-        <div className="relative w-full h-2 bg-gray-100 rounded-full mb-3">
-          <div 
-            className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#9333EA] to-[#7C3AED] rounded-full transition-all duration-300"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-        <p className="text-sm text-gray-500">
-          <span className="font-medium text-gray-900">{completedGoals}</span> of <span className="font-medium text-gray-900">{totalGoals}</span> goals completed
-        </p>
-      </div>
-
-      {/* Goals List */}
-      <div className="space-y-4 mb-20">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Goals</h2>
-        
-        {displayGoals.map((goal) => (
-          <div key={goal.id} className="bg-white rounded-2xl p-5 shadow-sm">
-            <div className="flex items-start gap-4">
-              <div className="mt-1">
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                  goal.completed ? 'bg-[#9333EA] border-[#9333EA]' : 'border-gray-300'
-                }`}>
-                  {goal.completed && (
-                    <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1 4.5L4.33333 8L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className={`text-base font-medium ${
-                    goal.completed ? 'line-through text-gray-400' : 'text-gray-900'
-                  }`}>
-                    {goal.title}
-                  </h3>
-                  <span className="text-sm font-medium text-gray-500">
-                    {goal.progress}%
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.6667 2.6665H3.33333C2.59695 2.6665 2 3.26346 2 3.99984V13.3332C2 14.0696 2.59695 14.6665 3.33333 14.6665H12.6667C13.403 14.6665 14 14.0696 14 13.3332V3.99984C14 3.26346 13.403 2.6665 12.6667 2.6665Z" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M10.666 1.3335V4.00016" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M5.33398 1.3335V4.00016" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M2 6.6665H14" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>Due {formatDate(goal.dueDate)}</span>
-                </div>
-                
-                <div className="w-full bg-gray-100 rounded-full h-1.5">
-                  <div 
-                    className="bg-gradient-to-r from-[#9333EA] to-[#7C3AED] h-1.5 rounded-full transition-all duration-300"
-                    style={{ width: `${goal.progress}%` }}
-                  />
-                </div>
-              </div>
-            </div>
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
+              My Goals
+            </h1>
+            <p className="text-lg text-gray-500">
+              Track your personal and professional progress here
+            </p>
           </div>
-        ))}
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
+            style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
+          >
+            Add New Goal
+          </button>
+        </div>
       </div>
-      
-      {/* Add Goal FAB */}
-      <button 
-        onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-[#9333EA] flex items-center justify-center shadow-lg hover:bg-[#7E22CE] transition-colors"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 4V20M4 12H20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </button>
-      {/* Add Goal Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">Add New Goal</h2>
+
+      {/* View Mode Toggle + Filter Bar */}
+      <div className="flex items-center justify-between mb-8">
+        {/* Filter Bar */}
+        <div className="flex gap-4">
+          {['all', 'in-progress', 'completed', 'upcoming'].map(type => (
+            <button
+              key={type}
+              onClick={() => setFilter(type as any)}
+              className={`px-4 py-2 rounded-full font-medium text-sm transition-colors focus:outline-none ${filter === type ? 'text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              style={filter === type ? {background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'} : {}}
+            >
+              {type === 'all' ? 'All Goals' : type === 'in-progress' ? 'In Progress' : type.charAt(0).toUpperCase() + type.slice(1)}
+            </button>
+          ))}
+        </div>
+        {/* View Mode Toggle (icons, right aligned) */}
+        <div className="flex gap-0.5 items-center h-10">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`flex items-center justify-center h-10 w-10 transition-colors focus:outline-none ${viewMode === 'grid' ? 'text-gray-700' : 'text-gray-400 hover:text-gray-600'}`}
+            aria-label="Grid view"
+            style={{background: 'none'}}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="2" y="2" width="6" height="6" rx="1.5"/>
+              <rect x="12" y="2" width="6" height="6" rx="1.5"/>
+              <rect x="12" y="12" width="6" height="6" rx="1.5"/>
+              <rect x="2" y="12" width="6" height="6" rx="1.5"/>
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`flex items-center justify-center h-10 w-10 transition-colors focus:outline-none ${viewMode === 'list' ? 'text-gray-700' : 'text-gray-400 hover:text-gray-600'}`}
+            aria-label="List view"
+            style={{background: 'none'}}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="4" y1="6" x2="16" y2="6"/>
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <line x1="4" y1="14" x2="16" y2="14"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Goals Grid (only in grid view) */}
+      {viewMode === 'grid' && (
+        <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 mb-8">
+          {filteredGoals.map((goal) => (
+            <div key={goal.id} className="bg-white rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between border border-gray-100 transition-all duration-200 p-6" style={{minWidth: '0'}}>
+              <div>
+                <h2 className="text-lg text-gray-800 leading-tight mb-1" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>{goal.title}</h2>
+                <span className="inline-block bg-[#ede9fe] text-[#6d28d9] text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2">{goal.completed ? 'Completed' : 'In Progress'}</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-20 h-1 bg-[#ede9fe] rounded-full">
+                    <div className="h-1 rounded-full transition-all duration-500" style={{ width: `${goal.progress}%`, background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)' }} />
+                  </div>
+                  <span className="text-sm font-semibold text-[#6d28d9] ml-2">{goal.progress}%</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-700 mb-1">
+                  <span>{goal.dueDate ? formatDate(goal.dueDate) : 'No date'}</span>
+                  <span>{goal.completed ? 'Completed' : 'In Progress'}</span>
+                </div>
+              </div>
+              {goal.description && (
+                <p className="text-sm text-gray-400 italic mt-2 line-clamp-3">{goal.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Goals List (detailed view) - hidden in grid mode */}
+      {viewMode === 'list' && (
+        <div className="divide-y divide-gray-50 bg-white rounded-lg border border-gray-50 mb-8">
+          {/* List Header */}
+          <div className="flex text-xs text-gray-500 mb-2 px-4 py-2">
+            <div className="w-8"></div>
+            <div className="flex-1 flex items-center">Title</div>
+            <div className="w-20 flex items-center">Category</div>
+            <div className="w-32 flex items-center">Progress</div>
+            <div className="w-24 flex items-center">Deadline</div>
+            <div className="w-24 flex items-center">Status</div>
+            <div className="w-16 flex items-center justify-center text-center">Actions</div>
+          </div>
+          {/* List Items */}
+          {filteredGoals.map((goal) => (
+            <div key={goal.id} className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 transition">
               <button 
-                onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700"
-                aria-label="Close"
+                onClick={() => toggleComplete(goal)}
+                className="text-gray-400 hover:text-purple-500"
+                aria-label={goal.completed ? 'Mark as incomplete' : 'Mark as complete'}
               >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                {goal.completed ? (
+                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="#766de0" strokeWidth="2" fill="#f3f0ff"/><path d="M7 10l2 2 4-4" stroke="#766de0" strokeWidth="2" fill="none"/></svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="#766de0" strokeWidth="2" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="#766de0" strokeWidth="2" fill="#fff"/></svg>
+                )}
               </button>
+              <div className="flex-1 text-sm font-medium">
+                <span className={goal.completed ? 'line-through text-gray-400' : 'text-gray-900'}>{goal.title}</span>
+              </div>
+              <div className="w-20 flex items-center pl-2">
+                <span className="inline-block text-white text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}>{goal.category ? goal.category : 'General'}</span>
+              </div>
+              <div className="w-32 text-center flex items-center justify-center gap-2">
+                <div className="w-20 h-1 bg-purple-100 rounded-full">
+                  <div className="h-1 rounded-full transition-all duration-500" style={{ width: `${goal.progress}%`, background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)' }} />
+                </div>
+                <span className="text-xs text-gray-700">{goal.progress}%</span>
+              </div>
+              <div className="w-24 text-center text-xs text-gray-700">{goal.dueDate ? formatDate(goal.dueDate) : 'No date'}</div>
+              <div className="w-24 text-center">
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white shadow`} style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}>{goal.completed ? 'Completed' : 'In Progress'}</span>
+              </div>
+              <div className="w-16 text-center">
+                {/* Example action: delete button */}
+                <button className="text-red-500 hover:text-red-700 text-xs">Delete</button>
+              </div>
             </div>
-            
-            <form onSubmit={handleAddGoal} className="space-y-6">
-              <div className="space-y-5">
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Goal Title
-                  </label>
-                  <input
-                    type="text"
-                    id="title"
-                    value={newGoal.title}
-                    onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-gray-700 placeholder-gray-400"
-                    placeholder="E.g., Learn React"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Due Date (optional)
-                  </label>
-                  <input
-                    type="date"
-                    id="dueDate"
-                    value={newGoal.dueDate}
-                    onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-gray-700"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Description (optional)
-                  </label>
-                  <textarea
-                    id="description"
-                    rows={3}
-                    value={newGoal.description}
-                    onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-gray-700 placeholder-gray-400"
-                    placeholder="Add some details about your goal..."
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-end space-x-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9333EA] focus:ring-offset-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 text-sm font-medium text-white bg-[#9333EA] hover:bg-[#7E22CE] rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9333EA] focus:ring-offset-white transition-colors"
-                >
-                  Add Goal
-                </button>
-              </div>
-            </form>
-          </div>
+          ))}
         </div>
       )}
     </main>

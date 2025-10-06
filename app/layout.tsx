@@ -18,6 +18,7 @@ export default function RootLayout({
 }>) {
   const router = useRouter();
   const pathname = usePathname();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   const navItems = [
     { name: 'Home', href: '/', icon: 'home' },
@@ -101,37 +102,51 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="h-full">
+      <body className={`${inter.className} h-full bg-white`}>
         <AppProvider>
-          <div className="flex min-h-screen bg-white overflow-y-auto">
+          <div className="flex min-h-full bg-white">
             {/* Sidebar */}
-            <div className="w-64 border-r border-gray-200 bg-white flex flex-col">
-              {/* Sidebar content */}
-              <div className="p-4 border-b border-gray-200">
-                <h1 className="text-xl font-bold text-gray-900">Bloom</h1>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-200 border-r border-gray-200 bg-white flex flex-col fixed top-0 left-0 bottom-0 z-10`}>
+              {/* Sidebar header */}
+              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                {!sidebarCollapsed && <h1 className="text-xl font-bold text-gray-900">Bloom</h1>}
+                <button 
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="text-[#736ee1] hover:text-[#5f5ac9] transition-colors"
+                  aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                >
+                  <svg 
+                    className="w-5 h-5" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    style={{
+                      transform: sidebarCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease-in-out'
+                    }}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 px-4 py-6">
-                <ul className="space-y-2">
+              <nav className="flex-1 px-2 py-6">
+                <ul className="space-y-1">
                   {/* Home */}
                   <li>
                     <Link 
                       href="/"
-                      className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors ${
+                      className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${
                         pathname === '/' 
                           ? 'bg-gray-100 text-gray-900' 
                           : 'text-gray-700 hover:bg-gray-50'
                       }`}
+                      title={sidebarCollapsed ? 'Home' : ''}
                     >
                       {renderIcon('home')}
-                      <span>Home</span>
+                      {!sidebarCollapsed && <span>Home</span>}
                     </Link>
                   </li>
                   
@@ -140,58 +155,78 @@ export default function RootLayout({
                     <li key={item.name}>
                       <Link 
                         href={item.href}
-                        className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors ${
+                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${
                           pathname === item.href 
                             ? 'bg-gray-100 text-gray-900' 
                             : 'text-gray-700 hover:bg-gray-50'
                         }`}
+                        title={sidebarCollapsed ? item.name : ''}
                       >
                         {renderIcon(item.icon)}
-                        <span>{item.name}</span>
+                        {!sidebarCollapsed && <span>{item.name}</span>}
                       </Link>
                     </li>
                   ))}
                 </ul>
               </nav>
 
+              {/* Projects Section */}
               <div className="mt-8">
-                <div className="flex items-center justify-between px-3 mb-4">
-                  <span className="text-sm font-medium text-gray-900">My Projects</span>
-                  <button className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700">
-                    <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f0efff', color: '#736ee1'}}>+ Add</span>
-                  </button>
+                <div className={`${sidebarCollapsed ? 'px-2' : 'px-3'} mb-4`}>
+                  {!sidebarCollapsed && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-900">My Projects</span>
+                      <button className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700">
+                        <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f0efff', color: '#736ee1'}}>+ Add</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <ul className="space-y-2">
-                  <li className="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 rounded-lg">
-                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Product launch</span>
-                  </li>
-                  <li className="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 rounded-lg">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Team brainstorm</span>
-                  </li>
-                  <li className="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 rounded-lg">
-                    <div className="w-3 h-3 bg-teal-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Branding launch</span>
-                  </li>
+                <ul className="space-y-1 px-2">
+                  {['Product launch', 'Team brainstorm', 'Branding launch'].map((project, index) => (
+                    <li key={project} className="group">
+                      <a 
+                        href="#" 
+                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-2 hover:bg-gray-50 rounded-lg transition-colors`}
+                        title={sidebarCollapsed ? project : ''}
+                      >
+                        <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                          index === 0 ? 'bg-purple-500' : 
+                          index === 1 ? 'bg-blue-500' : 'bg-teal-500'
+                        }`}></div>
+                        {!sidebarCollapsed && (
+                          <span className="text-sm text-gray-700 truncate">{project}</span>
+                        )}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
               {/* Bottom Section */}
-              <div className="p-4 border-t border-gray-200 mt-auto">
-                <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50 w-full">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 border-t border-gray-200 mt-auto">
+                <button 
+                  className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 w-full transition-colors`}
+                  title={sidebarCollapsed ? 'Settings' : ''}
+                >
+                  <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span>Settings</span>
+                  {!sidebarCollapsed && <span>Settings</span>}
                 </button>
               </div>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 overflow-auto">
-              {children}
+            <div className="flex-1 overflow-auto bg-white" style={{
+              marginLeft: sidebarCollapsed ? '4rem' : '16rem',
+              transition: 'margin-left 0.2s ease-in-out',
+              minHeight: '100vh'
+            }}>
+              <div className="min-h-full">
+                {children}
+              </div>
             </div>
           </div>
         </AppProvider>
