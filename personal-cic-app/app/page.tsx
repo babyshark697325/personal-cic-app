@@ -72,24 +72,23 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen relative">
-      {/* Grid background pattern with fade - starts at absolute top */}
-      <div className="absolute inset-0 top-0">
-        <div 
-          className="w-full"
-          style={{
-            height: '280px',
-            backgroundImage: `
-              linear-gradient(to right, #9ca3af 1px, transparent 1px),
-              linear-gradient(to bottom, #9ca3af 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)'
-          }}
-        ></div>
-
-      <div className="px-8 pt-8 pb-8 relative">
+  <main className="px-8 pt-8 pb-8 relative">
+    {/* Grid background pattern with fade - starts at absolute top */}
+    <div className="absolute inset-0 top-0">
+      <div 
+        className="w-full"
+        style={{
+          height: '280px',
+          backgroundImage: `
+            linear-gradient(to right, #9ca3af 1px, transparent 1px),
+            linear-gradient(to bottom, #9ca3af 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)'
+        }}
+      ></div>
+    </div>
         {/* Dashboard Header Section */}
         <div className="relative pb-8">
           <div className="flex items-end justify-between">
@@ -476,8 +475,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+      </main>
   );
 }

@@ -159,8 +159,7 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="px-8 pt-8 pb-8">
+  <main className="px-8 pt-8 pb-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -269,7 +268,6 @@ export default function TasksPage() {
               <div className="text-sm text-gray-600">Completed Tasks</div>
             </div>
           </div>
-          
           <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="text-center">
               <div className="text-3xl font-bold text-gray-900 mb-1">
@@ -278,7 +276,6 @@ export default function TasksPage() {
               <div className="text-sm text-gray-600">Pending Tasks</div>
             </div>
           </div>
-          
           <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="text-center">
               <div className="text-3xl font-bold text-gray-900 mb-1">
@@ -288,7 +285,6 @@ export default function TasksPage() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </main>
   );
 }

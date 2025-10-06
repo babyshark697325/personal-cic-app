@@ -104,7 +104,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppProvider>
-          <div className="flex h-screen bg-white">
+          <div className="flex min-h-screen bg-white overflow-y-auto">
             {/* Sidebar */}
             <div className="w-64 border-r border-gray-200 bg-white flex flex-col">
               {/* Sidebar content */}

@@ -105,7 +105,7 @@ export default function GoalsPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-gray-50 min-h-screen overflow-hidden">
+  <main className="max-w-md mx-auto p-6">
       {/* Header */}
       <div className="flex items-center mb-8">
         <button className="p-2 -ml-2">
@@ -275,6 +275,6 @@ export default function GoalsPage() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

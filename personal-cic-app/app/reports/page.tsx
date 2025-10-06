@@ -56,8 +56,7 @@ export default function ReportsPage() {
   const maxHours = Math.max(...chartData.map(d => d.hours));
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="px-8 pt-8 pb-8">
+  <main className="px-8 pt-8 pb-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -269,10 +268,9 @@ export default function ReportsPage() {
         </div>
 
         {/* Recent Achievements */}
-        <div className="mt-8">
+        {/* Recent Achievements */}
           <div className="bg-white rounded-lg p-6 border border-gray-200">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Achievements</h3>
-            
             <div className="grid grid-cols-3 gap-4">
               <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
@@ -285,7 +283,6 @@ export default function ReportsPage() {
                   <div className="text-xs text-gray-600">5 days in a row</div>
                 </div>
               </div>
-              
               <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -297,7 +294,6 @@ export default function ReportsPage() {
                   <div className="text-xs text-gray-600">Top 10% this month</div>
                 </div>
               </div>
-              
               <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
                 <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -311,8 +307,6 @@ export default function ReportsPage() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+      </main>
   );
 }

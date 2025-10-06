@@ -76,8 +76,7 @@ export default function CalendarPage() {
   const selectedDateEvents = events.filter(event => event.date === selectedDate);
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="px-8 pt-8 pb-8">
+  <main className="px-8 pt-8 pb-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -351,7 +350,6 @@ export default function CalendarPage() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </main>
   );
 }

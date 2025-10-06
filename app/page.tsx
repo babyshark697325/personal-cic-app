@@ -168,7 +168,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen relative">
+    <main className="px-8 pt-8 pb-8 relative">
       {/* Grid background pattern with fade - starts at absolute top */}
       <div className="absolute inset-0 top-0">
         <div 
@@ -185,7 +185,6 @@ export default function Home() {
           }}
         ></div>
       </div>
-
       <div className="px-8 pt-8 pb-8 relative">
         {/* Dashboard Header Section */}
         <div className="relative pb-8">
@@ -917,6 +916,6 @@ export default function Home() {
       >
         <p className="text-gray-700 leading-relaxed">{taskSummary}</p>
       </TaskSummaryModal>
-    </div>
+    </main>
   );
 }
