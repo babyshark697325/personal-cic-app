@@ -21,10 +21,15 @@ export default function RootLayout({
   
   const navItems = [
     { name: 'Home', href: '/', icon: 'home' },
-    { name: 'My tasks', href: '/tasks', icon: 'tasks' },
+    { name: 'Bloom AI', href: '/chat', icon: 'bloom' },
+    { name: 'Tasks', href: '/tasks', icon: 'tasks' },
+    { name: 'Goals', href: '/goals', icon: 'goals' },
+    { name: 'Reminders', href: '/reminders', icon: 'reminders' },
     { name: 'Inbox', href: '/inbox', icon: 'inbox' },
     { name: 'Calendar', href: '/calendar', icon: 'calendar' },
-    { name: 'Reports & Analytics', href: '/reports', icon: 'reports' }
+    { name: 'Reports', href: '/reports', icon: 'reports' },
+    { name: 'Check-in', href: '/checkin', icon: 'check' },
+    { name: 'History', href: '/history', icon: 'history' }
   ];
 
   const renderIcon = (iconType: string) => {
@@ -64,6 +69,33 @@ export default function RootLayout({
             <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
           </svg>
         );
+      case 'goals':
+        return (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+        );
+      case 'reminders':
+        return (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0018 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 00-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+          </svg>
+        );
+      case 'check':
+        return (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case 'history':
+        return (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+        );
+      case 'bloom':
+        return <FlowerIcon className="w-5 h-5" />;
       default:
     }
   };
@@ -87,52 +119,40 @@ export default function RootLayout({
 
               {/* Navigation */}
               <nav className="flex-1 px-4 py-6">
-              <ul className="space-y-2">
-                {/* Home */}
-                <li>
-                  <Link 
-                    href="/"
-                    className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors ${
-                      pathname === '/' 
-                        ? 'bg-gray-100 text-gray-900 font-medium' 
-                        : 'text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {renderIcon('home')}
-                    <span>Home</span>
-                  </Link>
-                </li>
-                
-                {/* Bloom AI */}
-                <li>
-                  <Link 
-                    href="/chat"
-                    className="flex items-center space-x-3 px-3 py-2 text-gray-700 text-sm hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <div className="w-4 h-4">
-                      <FlowerIcon />
-                    </div>
-                    <span>Bloom AI</span>
-                  </Link>
-                </li>
-                
-                {/* Rest of navigation items */}
-                {navItems.slice(1).map((item) => (
-                  <li key={item.name}>
+                <ul className="space-y-2">
+                  {/* Home */}
+                  <li>
                     <Link 
-                      href={item.href}
+                      href="/"
                       className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors ${
-                        pathname === item.href 
-                          ? 'bg-gray-100 text-gray-900 font-medium' 
+                        pathname === '/' 
+                          ? 'bg-gray-100 text-gray-900' 
                           : 'text-gray-700 hover:bg-gray-50'
                       }`}
                     >
-                      {renderIcon(item.icon)}
-                      <span>{item.name}</span>
+                      {renderIcon('home')}
+                      <span>Home</span>
                     </Link>
                   </li>
-                ))}
-              </ul>
+                  
+                  {/* Navigation items */}
+                  {navItems.slice(1).map((item) => (
+                    <li key={item.name}>
+                      <Link 
+                        href={item.href}
+                        className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors ${
+                          pathname === item.href 
+                            ? 'bg-gray-100 text-gray-900' 
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {renderIcon(item.icon)}
+                        <span>{item.name}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
 
               <div className="mt-8">
                 <div className="flex items-center justify-between px-3 mb-4">
@@ -156,7 +176,6 @@ export default function RootLayout({
                   </li>
                 </ul>
               </div>
-              </nav>
 
               {/* Bottom Section */}
               <div className="p-4 border-t border-gray-200 mt-auto">

@@ -30,7 +30,8 @@ export interface Reminder {
 export interface Goal {
   id: string;
   title: string;
-  description: string;
+  description?: string;
+  dueDate?: string;
   targetDate?: Date;
   completed: boolean;
   progress: number; // 0-100

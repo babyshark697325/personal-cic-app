@@ -1,10 +1,104 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAppContext } from '@/context/AppContext';
+import FlowerIcon from '@/components/FlowerIcon';
+
+// Custom modal component
+interface TaskSummaryModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onViewAll: () => void;
+  children: React.ReactNode;
+}
+
+const TaskSummaryModal: React.FC<TaskSummaryModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  onViewAll,
+  children 
+}) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+      <div 
+        ref={modalRef}
+        className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl"
+      >
+        {/* Header with Bloom icon and close button */}
+        <div className="relative">
+          <div className="flex items-center justify-center pt-5 pb-4 px-6 relative">
+            {/* Bloom icon - absolutely positioned on the left */}
+            <div className="absolute left-6">
+              <FlowerIcon className="h-5 w-5 text-indigo-500" />
+            </div>
+            {/* Header title - centered */}
+            <h3 className="text-lg font-medium text-gray-900">Task Updates</h3>
+          </div>
+        </div>
+        
+        {/* Content */}
+        <div className="px-6 pb-6">
+          <p className="text-gray-600 text-sm text-center mb-6">
+            {children}
+          </p>
+          
+          {/* Buttons */}
+          <div className="flex justify-center space-x-3 mt-6">
+            <button
+              type="button"
+              className="px-5 py-2 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-colors"
+              onClick={onClose}
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              className="px-5 py-2 rounded-full text-sm font-medium text-white shadow-sm transition-all duration-200"
+              style={{ background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)' }}
+              onMouseOver={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #6b62d4, #7369dc, #b3aae6)'}
+              onMouseOut={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}
+              onClick={() => {
+                onClose();
+                onViewAll();
+              }}
+            >
+              View All Tasks
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
-  const { tasks, addTask, updateTask, deleteTask, reminders, deleteReminder } = useAppContext();
+  const { tasks, addTask, updateTask, deleteTask, reminders, deleteReminder, addProject } = useAppContext();
+  const [showTaskSummary, setShowTaskSummary] = useState(false);
+  const [taskSummary, setTaskSummary] = useState('You have 3 tasks due today and 2 overdue tasks.');
+  
+  const handleViewAllTasks = () => {
+    window.location.href = '/tasks';
+  };
 
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [newTaskName, setNewTaskName] = useState('');
@@ -112,36 +206,105 @@ export default function Home() {
             {/* Right side - Action Buttons aligned with second line */}
             <div className="flex items-center space-x-4 mb-1">
               {/* Ask AI button - filled gradient pill */}
-              <button 
-                onClick={() => alert('AI feature coming soon!')}
-                className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
+              <a 
+                href="/chat"
+                className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all flex items-center justify-center" 
                 style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
               >
                 Ask AI
-              </button>
+              </a>
 
-              {/* Outlined gradient border pills */}
+              {/* Task Management */}
               <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
                 <button 
-                  onClick={() => alert('Getting task updates...')}
+                  onClick={() => {
+                    // Get current date and calculate start/end of week
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const endOfWeek = new Date(today);
+                    endOfWeek.setDate(today.getDate() + 6);
+                    endOfWeek.setHours(23, 59, 59, 999);
+                    
+                    // Filter tasks
+                    const tasksDueToday = tasks.filter(task => 
+                      task.dueDate && 
+                      new Date(task.dueDate).toDateString() === today.toDateString()
+                    );
+                    
+                    const completedTasks = tasks.filter(task => task.completed);
+                    
+                    const upcomingThisWeek = tasks.filter(task => 
+                      task.dueDate && 
+                      !task.completed &&
+                      new Date(task.dueDate) > today &&
+                      new Date(task.dueDate) <= endOfWeek
+                    );
+                    
+                    // Create summary message
+                    const summary = `You have ${tasksDueToday.length} task${tasksDueToday.length !== 1 ? 's' : ''} due today, ${completedTasks.length} completed, and ${upcomingThisWeek.length} upcoming this week.`;
+                    
+                    // Show the summary in our custom modal
+                    setTaskSummary(summary);
+                    setShowTaskSummary(true);
+                  }}
                   className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
                 >
                   Get tasks updates
                 </button>
               </div>
 
+              {/* Workspace Management */}
               <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
                 <button 
-                  onClick={() => alert('Create workspace feature coming soon!')}
+                  onClick={() => {
+                    const action = prompt('Workspace Management\n\n1. Create new workspace\n2. View all workspaces\n\nEnter your choice (1-2):');
+                    
+                    if (action === '1') {
+                      const workspaceName = prompt('Enter workspace name:');
+                      if (workspaceName) {
+                        addProject({
+                          name: workspaceName,
+                          description: prompt('Workspace description (optional):') || '',
+                          color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
+                        });
+                        alert(`✅ Workspace "${workspaceName}" created successfully!`);
+                      }
+                    } else if (action === '2') {
+                      const projects: Array<{name: string; description?: string}> = []; // Get projects from your context
+                      if (projects.length === 0) {
+                        alert('No workspaces found.');
+                      } else {
+                        alert('Your Workspaces:\n\n' + 
+                          projects.map(p => `• ${p.name}${p.description ? ` - ${p.description}` : ''}`).join('\n')
+                        );
+                      }
+                    }
+                  }}
                   className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
                 >
                   Create workspace
                 </button>
               </div>
 
+              {/* App Integration */}
               <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
                 <button 
-                  onClick={() => alert('Connect apps feature coming soon!')}
+                  onClick={() => {
+                    const app = prompt('App Integration\n\n1. Google Calendar\n2. Slack\n3. Email\n4. Other...\n\nSelect an app to connect:');
+                    
+                    if (app) {
+                      const appName = {
+                        '1': 'Google Calendar',
+                        '2': 'Slack',
+                        '3': 'Email',
+                        '4': prompt('Enter app name:')
+                      }[app] || 'the selected app';
+                      
+                      if (appName) {
+                        alert(`🔌 Connecting to ${appName}...\n\nThis would typically open an OAuth flow or connection settings for ${appName} in a real application.`);
+                      }
+                    }
+                  }}
                   className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
                 >
                   Connect apps
@@ -745,6 +908,15 @@ export default function Home() {
           </div>
         </div>
       </div>
+      
+      {/* Task Updates Modal */}
+      <TaskSummaryModal 
+        isOpen={showTaskSummary} 
+        onClose={() => setShowTaskSummary(false)}
+        onViewAll={handleViewAllTasks}
+      >
+        <p className="text-gray-700 leading-relaxed">{taskSummary}</p>
+      </TaskSummaryModal>
     </div>
   );
 }

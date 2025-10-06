@@ -30,25 +30,15 @@ export default function TasksWidget({
 }: TasksWidgetProps) {
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-200">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>My Tasks</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* Only keep the three dots button, remove other SVG icons */}
-          <button className="text-gray-600 hover:text-gray-800">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
-          </button>
-        </div>
+      <div style={{background: '#ffeeba', color: '#856404', padding: '8px', borderRadius: '6px', marginBottom: '12px', textAlign: 'center', fontWeight: 'bold'}}>This is a test message. If you see this, your code is updating!</div>
+      <div className="flex items-center mb-4">
+        <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>My Tasks</h2>
       </div>
 
       {/* IN PROGRESS Section */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
-          {/* TEMP: Add red border for visual debug */}
-          <div style={{ border: '2px solid red', height: '24px' }}></div>
+          {/* Area is now empty before the label and count */}
           <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#ace8eb'}}>IN PROGRESS</span>
           <span className="text-sm text-gray-600">• {tasks.filter(task => task.status === 'in-progress').length} tasks</span>
         </div>
@@ -147,11 +137,7 @@ export default function TasksWidget({
       {/* TO DO Section */}
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-3">
-          <button className="text-gray-600">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-            </svg>
-          </button>
+          {/* Area is now empty before the label and count */}
           <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#f4f6f8'}}>TO DO</span>
           <span className="text-sm text-gray-600">• {tasks.filter((task: Task) => task.status === 'todo').length} task</span>
         </div>
@@ -160,11 +146,7 @@ export default function TasksWidget({
       {/* UPCOMING Section */}
       <div>
         <div className="flex items-center gap-2">
-          <button className="text-gray-600">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-            </svg>
-          </button>
+          {/* Area is now empty before the label and count */}
           <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#f8d4ae'}}>UPCOMING</span>
           <span className="text-sm text-gray-600">• {tasks.filter((task: Task) => task.status === 'upcoming').length} tasks</span>
         </div>

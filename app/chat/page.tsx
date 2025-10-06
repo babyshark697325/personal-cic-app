@@ -485,15 +485,6 @@ export default function ChatPage() {
                 </div>
               </div>
             )}
-            <TasksWidget 
-              tasks={tasks} 
-              onToggleComplete={(taskId) => {
-                const task = tasks.find(t => t.id === taskId);
-                if (task) {
-                  updateTask(taskId, { completed: !task.completed });
-                }
-              }} 
-            />
             <div ref={messagesEndRef} />
           </div>
         </div>
