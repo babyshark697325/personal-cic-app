@@ -143,11 +143,10 @@ export default function GoalsPage() {
   const progressPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
   // Filter state
-  const [filter, setFilter] = useState<'all' | 'in-progress' | 'completed' | 'upcoming'>('all');
+  const [filter, setFilter] = useState<'in-progress' | 'completed' | 'upcoming'>('in-progress');
   const [expandedGoals, setExpandedGoals] = useState<Set<string>>(new Set());
   
   const filteredGoals = displayGoals.filter(goal => {
-    if (filter === 'all') return true;
     if (filter === 'in-progress') return !goal.completed && (!goal.dueDate || new Date(goal.dueDate) >= new Date());
     if (filter === 'completed') return goal.completed;
     if (filter === 'upcoming') return !goal.completed && goal.dueDate && new Date(goal.dueDate) > new Date();
@@ -287,7 +286,7 @@ export default function GoalsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   return (
-    <div className="px-8 pt-8 pb-8">
+  <div className="px-8 pt-8 pb-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -308,33 +307,67 @@ export default function GoalsPage() {
           </button>
         </div>
       </div>
-      {/* View Mode Toggle */}
-      <div className="flex items-center gap-2 mb-8">
-        <button
-          onClick={() => setViewMode('grid')}
-          className={`flex items-center justify-center h-10 w-10 transition-colors focus:outline-none ${viewMode === 'grid' ? 'text-gray-700' : 'text-gray-400 hover:text-gray-600'}`}
-          aria-label="Grid view"
-          style={{background: 'none'}} 
-        >
-          <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="2" y="2" width="6" height="6" rx="1.5"/>
-            <rect x="12" y="2" width="6" height="6" rx="1.5"/>
-            <rect x="12" y="12" width="6" height="6" rx="1.5"/>
-            <rect x="2" y="12" width="6" height="6" rx="1.5"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => setViewMode('list')}
-          className={`flex items-center justify-center h-10 w-10 transition-colors focus:outline-none ${viewMode === 'list' ? 'text-gray-700' : 'text-gray-400 hover:text-gray-600'}`}
-          aria-label="List view"
-          style={{background: 'none'}} 
-        >
-          <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="4" y1="6" x2="16" y2="6"/>
-            <line x1="4" y1="10" x2="16" y2="10"/>
-            <line x1="4" y1="14" x2="16" y2="14"/>
-          </svg>
-        </button>
+      {/* Filter Buttons & View Mode Toggle */}
+      <div className="flex flex-wrap items-center gap-4 mb-8">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setFilter('in-progress')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus:outline-none border-0
+              ${filter === 'in-progress'
+                ? 'bg-gradient-to-r from-[#766de0] via-[#7d73e7] to-[#bcb4ee] text-white scale-105'
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}
+            `}
+          >
+            In Progress
+          </button>
+          <button
+            onClick={() => setFilter('completed')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus:outline-none border-0
+              ${filter === 'completed'
+                ? 'bg-gradient-to-r from-[#766de0] via-[#7d73e7] to-[#bcb4ee] text-white scale-105'
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}
+            `}
+          >
+            Completed
+          </button>
+          <button
+            onClick={() => setFilter('upcoming')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus:outline-none border-0
+              ${filter === 'upcoming'
+                ? 'bg-gradient-to-r from-[#766de0] via-[#7d73e7] to-[#bcb4ee] text-white scale-105'
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}
+            `}
+          >
+            Upcoming
+          </button>
+        </div>
+        <div className="flex items-center gap-2 ml-auto">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`flex items-center justify-center h-10 w-10 transition-colors focus:outline-none ${viewMode === 'grid' ? 'text-gray-700' : 'text-gray-400 hover:text-gray-600'}`}
+            aria-label="Grid view"
+            style={{background: 'none'}} 
+          >
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="2" y="2" width="6" height="6" rx="1.5"/>
+              <rect x="12" y="2" width="6" height="6" rx="1.5"/>
+              <rect x="12" y="12" width="6" height="6" rx="1.5"/>
+              <rect x="2" y="12" width="6" height="6" rx="1.5"/>
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`flex items-center justify-center h-10 w-10 transition-colors focus:outline-none ${viewMode === 'list' ? 'text-gray-700' : 'text-gray-400 hover:text-gray-600'}`}
+            aria-label="List view"
+            style={{background: 'none'}} 
+          >
+            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="4" y1="6" x2="16" y2="6"/>
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <line x1="4" y1="14" x2="16" y2="14"/>
+            </svg>
+          </button>
+        </div>
       </div>
       {/* Goals Grid (only in grid view) */}
       {viewMode === 'grid' && (
