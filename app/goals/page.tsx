@@ -22,16 +22,16 @@ export default function GoalsPage() {
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   // Add missing state for new goal form
-  const initialNewGoal = {
+  const initialNewGoal: Partial<Goal> = {
     title: '',
     description: '',
     dueDate: '',
-    priority: 'medium',
+    priority: 'medium', // type matches Goal
     progress: 0,
     completed: false,
     subtasks: []
   };
-  const [newGoal, setNewGoal] = useState<any>(initialNewGoal);
+  const [newGoal, setNewGoal] = useState<Partial<Goal>>(initialNewGoal);
 
   // Function to calculate progress based on subtasks
   const calculateProgress = (subtasks: Array<{ completed: boolean }> = []) => {
@@ -179,16 +179,22 @@ export default function GoalsPage() {
       setEditingGoal(null);
     } else {
       // Add new goal
-      if (!newGoal.title.trim()) return;
+  if (!newGoal.title || !newGoal.title.trim()) return;
       
       const newGoalWithId: Goal = {
-        ...newGoal,
         id: Date.now().toString(),
+        title: newGoal.title || '',
+        description: newGoal.description || '',
+        dueDate: newGoal.dueDate || '',
+        targetDate: newGoal.targetDate,
+        completed: false,
+        progress: newGoal.progress ?? 0,
+        priority: newGoal.priority ?? 'medium',
+        projectId: newGoal.projectId,
+        category: newGoal.category,
+        subtasks: newGoal.subtasks ?? [],
         createdAt: new Date(),
         updatedAt: new Date(),
-        completed: false,
-        progress: 0,
-        subtasks: []
       };
       
       addGoal(newGoalWithId);
