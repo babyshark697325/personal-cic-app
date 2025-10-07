@@ -39,22 +39,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // Convert string dates back to Date objects
         const processedData = {
           ...parsedData,
-          tasks: parsedData.tasks.map((task: any) => ({
+          tasks: parsedData.tasks.map((task: import("@/types").Task) => ({
             ...task,
             dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
             createdAt: new Date(task.createdAt),
             updatedAt: new Date(task.updatedAt),
           })),
-          projects: parsedData.projects.map((project: any) => ({
+          projects: parsedData.projects.map((project: import("@/types").Project) => ({
             ...project,
             createdAt: new Date(project.createdAt),
             updatedAt: new Date(project.updatedAt),
           })),
-          reminders: parsedData.reminders.map((reminder: any) => ({
+          reminders: parsedData.reminders.map((reminder: import("@/types").Reminder) => ({
             ...reminder,
             dueDate: new Date(reminder.dueDate),
           })),
-          goals: parsedData.goals.map((goal: any) => ({
+          goals: parsedData.goals.map((goal: import("@/types").Goal) => ({
             ...goal,
             targetDate: goal.targetDate ? new Date(goal.targetDate) : undefined,
             createdAt: new Date(goal.createdAt),
