@@ -298,12 +298,13 @@ export default function GoalsPage() {
               Track your personal and professional progress here
             </p>
           </div>
-          <button 
+          <button
             onClick={() => setIsModalOpen(true)}
-            className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
+            className="flex items-center gap-2 h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all"
             style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
           >
-            Add New Goal
+            <Plus size={18} />
+            Add
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Plus } from "lucide-react";
 
 export default function RemindersPage() {
   const [reminders, setReminders] = useState([
@@ -40,6 +41,14 @@ export default function RemindersPage() {
                 View and manage your reminders for today
               </p>
             </div>
+            <button
+              onClick={() => {/* TODO: open reminder modal or add logic */}}
+              className="flex items-center gap-2 h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all"
+              style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
+            >
+              <Plus size={18} />
+              Add
+            </button>
           </div>
         </div>
 

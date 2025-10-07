@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { Plus } from 'lucide-react';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([
@@ -173,10 +174,11 @@ export default function TasksPage() {
               </div>
               <button 
                 onClick={() => setShowTaskForm(true)}
-                className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
+                className="flex items-center gap-2 h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
                 style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
               >
-                Add New Task
+                <Plus size={18} />
+                Add
               </button>
             </div>
         </div>
