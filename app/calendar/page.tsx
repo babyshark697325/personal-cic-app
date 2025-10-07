@@ -5,7 +5,6 @@ import { useState } from 'react';
 export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState('July');
   const [selectedDate, setSelectedDate] = useState('07');
-  
   const [events, setEvents] = useState([
     {
       id: 1,
@@ -76,130 +75,124 @@ export default function CalendarPage() {
   const selectedDateEvents = events.filter(event => event.date === selectedDate);
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="px-8 pt-8 pb-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
-                Calendar
-              </h1>
-              <p className="text-lg text-gray-600">
-                Schedule and manage your appointments and events
-              </p>
+    <main className="px-8 pt-8 pb-8">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
+              Calendar
+            </h1>
+            <p className="text-lg text-gray-600">
+              Schedule and manage your appointments and events
+            </p>
+          </div>
+          <button 
+            onClick={() => setShowEventForm(true)}
+            className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
+            style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
+          >
+            Add Event
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-6">
+        {/* Calendar Widget */}
+        <div className="col-span-2">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <h2 className="text-lg font-medium text-gray-900">Calendar</h2>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-sm text-gray-700">{currentMonth}</span>
+                <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </div>
             </div>
-            
-            <button 
-              onClick={() => setShowEventForm(true)}
-              className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
-              style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
-            >
-              Add Event
-            </button>
+
+            {/* Week navigation */}
+            <div className="flex items-center justify-between mb-6">
+              <button className="p-1 hover:bg-gray-100 rounded">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15,18 9,12 15,6"/>
+                </svg>
+              </button>
+              <div className="flex items-center gap-2">
+                {weekDays.map((dayInfo, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">{dayInfo.day}</div>
+                    <button 
+                      onClick={() => setSelectedDate(dayInfo.date)}
+                      className={`px-3 py-2 text-sm rounded-lg transition-colors ${
+                        selectedDate === dayInfo.date
+                          ? 'text-white font-medium' 
+                          : dayInfo.isToday
+                          ? 'text-white font-medium'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`} 
+                      style={selectedDate === dayInfo.date || dayInfo.isToday ? {backgroundColor: '#736edd'} : {}}
+                    >
+                      {dayInfo.date}
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button className="p-1 hover:bg-gray-100 rounded">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9,18 15,12 9,6"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Month Grid */}
+            <div className="grid grid-cols-7 gap-1 mb-4">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                <div key={day} className="text-center text-xs text-gray-500 py-2 font-medium">
+                  {day}
+                </div>
+              ))}
+              {/* Calendar dates */}
+              {Array.from({length: 35}, (_, i) => {
+                const date = i - 6; // Adjust for July starting on Monday
+                const dayStr = date > 0 && date <= 31 ? date.toString().padStart(2, '0') : '';
+                const hasEvent = events.some(event => event.date === dayStr);
+                const isSelected = selectedDate === dayStr;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => dayStr && setSelectedDate(dayStr)}
+                    disabled={!dayStr}
+                    className={`h-8 text-sm rounded transition-colors relative ${
+                      !dayStr 
+                        ? 'text-transparent cursor-default' 
+                        : isSelected
+                        ? 'bg-purple-600 text-white font-medium'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    {dayStr}
+                    {hasEvent && (
+                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full"></div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
-          {/* Calendar Widget */}
-          <div className="col-span-2">
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                  </svg>
-                  <h2 className="text-lg font-medium text-gray-900">Calendar</h2>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-sm text-gray-700">{currentMonth}</span>
-                  <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Week navigation */}
-              <div className="flex items-center justify-between mb-6">
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15,18 9,12 15,6"/>
-                  </svg>
-                </button>
-                
-                <div className="flex items-center gap-2">
-                  {weekDays.map((dayInfo, index) => (
-                    <div key={index} className="text-center">
-                      <div className="text-xs text-gray-500 mb-1">{dayInfo.day}</div>
-                      <button 
-                        onClick={() => setSelectedDate(dayInfo.date)}
-                        className={`px-3 py-2 text-sm rounded-lg transition-colors ${
-                          selectedDate === dayInfo.date
-                            ? 'text-white font-medium' 
-                            : dayInfo.isToday
-                            ? 'text-white font-medium'
-                            : 'text-gray-700 hover:bg-gray-100'
-                        }`} 
-                        style={selectedDate === dayInfo.date || dayInfo.isToday ? {backgroundColor: '#736edd'} : {}}
-                      >
-                        {dayInfo.date}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9,18 15,12 9,6"/>
-                  </svg>
-                </button>
-              </div>
-
-              {/* Month Grid */}
-              <div className="grid grid-cols-7 gap-1 mb-4">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                  <div key={day} className="text-center text-xs text-gray-500 py-2 font-medium">
-                    {day}
-                  </div>
-                ))}
-                
-                {/* Calendar dates */}
-                {Array.from({length: 35}, (_, i) => {
-                  const date = i - 6; // Adjust for July starting on Monday
-                  const dayStr = date > 0 && date <= 31 ? date.toString().padStart(2, '0') : '';
-                  const hasEvent = events.some(event => event.date === dayStr);
-                  const isSelected = selectedDate === dayStr;
-                  
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => dayStr && setSelectedDate(dayStr)}
-                      disabled={!dayStr}
-                      className={`h-8 text-sm rounded transition-colors relative ${
-                        !dayStr 
-                          ? 'text-transparent cursor-default' 
-                          : isSelected
-                          ? 'bg-purple-600 text-white font-medium'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      {dayStr}
-                      {hasEvent && (
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full"></div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Events for Selected Date */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
+        {/* Events for Selected Date */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 Events for {currentMonth} {selectedDate}
               </h3>
@@ -351,7 +344,6 @@ export default function CalendarPage() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+  </main>
   );
 }

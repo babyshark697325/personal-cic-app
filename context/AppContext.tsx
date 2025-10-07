@@ -33,7 +33,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Load data from localStorage on mount
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
+    if (savedData && savedData.trim().length > 0) {
       try {
         const parsedData = JSON.parse(savedData);
         // Convert string dates back to Date objects

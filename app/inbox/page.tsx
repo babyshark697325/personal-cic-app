@@ -320,41 +320,6 @@ export default function InboxPage() {
             )}
           </div>
         </div>
-
-        {/* Quick Stats */}
-        <div className="mt-8 grid grid-cols-4 gap-6">
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900 mb-1">{messages.length}</div>
-              <div className="text-sm text-gray-600">Total Messages</div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-red-600 mb-1">{unreadCount}</div>
-              <div className="text-sm text-gray-600">Unread</div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600 mb-1">
-                {messages.filter(m => m.type === 'reminder').length}
-              </div>
-              <div className="text-sm text-gray-600">Reminders</div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 mb-1">
-                {messages.filter(m => m.type === 'notification').length}
-              </div>
-              <div className="text-sm text-gray-600">Notifications</div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

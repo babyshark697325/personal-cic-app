@@ -27,6 +27,14 @@ export interface Reminder {
   taskId?: string;
 }
 
+export interface SubTask {
+  id: string;
+  title: string;
+  completed: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Goal {
   id: string;
   title: string;
@@ -38,6 +46,7 @@ export interface Goal {
   priority: 'low' | 'medium' | 'high';
   projectId?: string;
   category?: string; // Added for UI pill
+  subtasks?: SubTask[];
   createdAt: Date;
   updatedAt: Date;
 }

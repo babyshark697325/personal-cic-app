@@ -162,24 +162,23 @@ export default function TasksPage() {
     <main className="px-8 pt-8 pb-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
-                My Tasks
-              </h1>
-              <p className="text-lg text-gray-600">
-                Manage and track all your tasks in one place
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
+                  My Tasks
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Manage and track all your tasks in one place
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowTaskForm(true)}
+                className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
+                style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
+              >
+                Add New Task
+              </button>
             </div>
-            
-            <button 
-              onClick={() => setShowTaskForm(true)}
-              className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all" 
-              style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
-            >
-              Add New Task
-            </button>
-          </div>
         </div>
 
         {/* Add Task Form */}

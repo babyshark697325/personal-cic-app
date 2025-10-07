@@ -30,19 +30,28 @@ body {
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary, #6366f1);
+  background: #f5f3ff; /* Light purple background */
   border-radius: 4px;
 }
 
+::-webkit-scrollbar-thumb {
+  background: #c4b5fd; /* Light purple thumb */
+  border-radius: 4px;
+  border: 2px solid #f5f3ff; /* Match track color */
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-dark, #4f46e5);
+  background: #a78bfa; /* Slightly darker purple on hover */
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c4b5fd #f5f3ff; /* thumb and track color */
 }
 
 /* Smooth transitions */
