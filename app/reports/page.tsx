@@ -198,14 +198,7 @@ export default function ReportsPage() {
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
-                    <circle cx="12" cy="12" r="10"/>
-                    <circle cx="12" cy="12" r="6"/>
-                    <circle cx="12" cy="12" r="2"/>
-                  </svg>
-                  <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Goal Progress</h2>
-                </div>
+                <h2 className="text-lg text-gray-800" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Goal Progress</h2>
               </div>
               
               <div className="space-y-4">
@@ -231,7 +224,7 @@ export default function ReportsPage() {
 
             {/* Performance Summary */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Performance Summary</h3>
+              <h3 className="text-lg text-gray-800 font-sans mb-4" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Performance Summary</h3>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between">

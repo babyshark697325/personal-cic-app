@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAppContext } from '@/context/AppContext';
 import FlowerIcon from '@/components/FlowerIcon';
+import CalendarWidgetDashboard from '@/components/CalendarWidgetDashboard';
 
 // Custom modal component
 interface TaskSummaryModalProps {
@@ -107,6 +108,14 @@ export default function Home() {
     todo: true,
     upcoming: true
   });
+
+  // Calendar widget state
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
   
   const toggleSection = (section: 'inProgress' | 'todo' | 'upcoming') => {
     setExpandedSections(prev => ({
@@ -744,94 +753,63 @@ export default function Home() {
             </div>
 
             {/* Calendar Widget */}
+            {/* Calendar Widget - replaced with calendar page logic/UI */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                  </svg>
-                  <h2 className="text-lg font-medium text-gray-900">Calendar</h2>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-sm text-gray-700">July</span>
-                  <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Week navigation */}
-              <div className="flex items-center justify-between mb-6">
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15,18 9,12 15,6"/>
-                  </svg>
-                </button>
-                
-                <div className="flex items-center gap-2">
-                  {[
-                    { day: 'Fri', date: '04' },
-                    { day: 'Sat', date: '05' },
-                    { day: 'Sun', date: '06' },
-                    { day: 'Mon', date: '07', isToday: true },
-                    { day: 'Tue', date: '08' },
-                    { day: 'Wed', date: '09' },
-                    { day: 'Thu', date: '10' }
-                  ].map((dayInfo, index) => (
-                    <div key={index} className="text-center">
-                      <div className="text-xs text-gray-500 mb-1">{dayInfo.day}</div>
-                      <button className={`px-3 py-2 text-sm rounded-lg ${
-                        dayInfo.isToday 
-                          ? 'text-white font-medium' 
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`} style={dayInfo.isToday ? {backgroundColor: '#736edd'} : {}}>
-                        {dayInfo.date}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9,18 15,12 9,6"/>
-                  </svg>
-                </button>
-              </div>
-
-              {/* Meeting Event */}
-              <div className="rounded-lg p-4" style={{backgroundColor: '#f5f6ff'}}>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-sm font-medium text-gray-900 mb-1">Meeting with VP</h3>
-                    <p className="text-xs text-gray-500">Today • 10:00 - 11:00 am</p>
-                    
-                    <div className="flex items-center gap-2 mt-3">
-                      <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-full border border-gray-200">
-                        <span className="text-xs text-gray-700">Google Meet</span>
-                      </div>
-                      
-                      <div className="flex -space-x-1 ml-auto">
-                        <div className="w-6 h-6 bg-orange-400 rounded-full border-2 border-white"></div>
-                        <div className="w-6 h-6 bg-blue-500 rounded-full border-2 border-white"></div>
-                        <div className="w-6 h-6 bg-gray-400 rounded-full border-2 border-white"></div>
-                        <div className="w-6 h-6 bg-red-400 rounded-full border-2 border-white"></div>
-                        <div className="w-6 h-6 bg-purple-600 text-white text-xs rounded-full border-2 border-white flex items-center justify-center font-medium">
-                          +2
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <button className="text-gray-400 hover:text-gray-600 ml-4">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
                     </svg>
-                  </button>
-                </div>
+                    <h2 className="text-lg text-gray-800 font-sans" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
+                      Calendar
+                    </h2>
+                  </div>
+                  <div className="relative">
+                    <button
+                      className="flex items-center gap-1 text-sm text-gray-400 bg-transparent outline-none font-normal"
+                      onClick={() => setMonthDropdownOpen(!monthDropdownOpen)}
+                    >
+                      {monthNames[selectedMonth]}
+                      <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                    {monthDropdownOpen && (
+                      <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10">
+                        {monthNames.map((name, idx) => (
+                          <div
+                            key={name}
+                            role="button"
+                            tabIndex={0}
+                            className={`block px-4 py-2 text-sm w-full text-left cursor-pointer hover:bg-gray-100 ${selectedMonth === idx ? 'font-bold text-[#766de0]' : 'text-gray-400 font-normal'}`}
+                            onClick={() => {
+                              setSelectedMonth(idx);
+                              setMonthDropdownOpen(false);
+                            }}
+                            onKeyPress={e => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                setSelectedMonth(idx);
+                                setMonthDropdownOpen(false);
+                              }
+                            }}
+                          >
+                            {name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
               </div>
+              <CalendarWidgetDashboard
+                monthNames={monthNames}
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+                monthDropdownOpen={monthDropdownOpen}
+                setMonthDropdownOpen={setMonthDropdownOpen}
+              />
             </div>
 
             {/* Reminders Widget */}
@@ -842,7 +820,7 @@ export default function Home() {
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12,6 12,12 16,14"/>
                   </svg>
-                  <h2 className="text-lg font-medium text-gray-900">Reminders</h2>
+                  <h2 className="text-lg text-gray-800 font-sans" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Reminders</h2>
                 </div>
               </div>
 

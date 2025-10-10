@@ -105,7 +105,7 @@ export default function RemindersPage() {
 
           {/* Quick Stats */}
           <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Stats</h3>
+            <h3 className="text-lg text-gray-800 font-sans mb-4" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Quick Stats</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Total Reminders</span>
