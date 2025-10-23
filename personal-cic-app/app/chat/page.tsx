@@ -25,9 +25,19 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = (text?: string) => {
+  const handleSendMessage = async (text?: string) => {
     const messageText = text || inputText;
     if (!messageText.trim()) return;
+
+    // Check-in intent detection (robust)
+    const trimmedText = messageText.trim();
+    const checkinRegex = /^(check in|\/checkin|checking in)\s*(.*)$/i;
+    const match = trimmedText.match(checkinRegex);
+    if (match) {
+      console.log('Check-in intent detected:', match);
+    } else {
+      console.log('No check-in intent detected:', trimmedText);
+    }
 
     const newMessage: Message = {
       id: messages.length + 1,
@@ -35,12 +45,53 @@ export default function ChatPage() {
       isUser: true,
       timestamp: new Date()
     };
-
     setMessages(prev => [...prev, newMessage]);
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI response
+    if (match) {
+      // Extracted check-in message
+      const checkinMsg = match[2]?.trim() || "";
+      try {
+        const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            Source: "Bloom",
+            First_Name: "Nykeira",
+            Last_Name: "McRoy",
+            Message: checkinMsg,
+            Timestamp: new Date().toISOString()
+          })
+        });
+        if (res.ok) {
+          setMessages(prev => [...prev, {
+            id: prev.length + 2,
+            text: "✅ Got it — your check-in was sent successfully!",
+            isUser: false,
+            timestamp: new Date()
+          }]);
+        } else {
+          setMessages(prev => [...prev, {
+            id: prev.length + 2,
+            text: "⚠️ Something went wrong sending your check-in.",
+            isUser: false,
+            timestamp: new Date()
+          }]);
+        }
+      } catch (err) {
+        setMessages(prev => [...prev, {
+          id: prev.length + 2,
+          text: "⚠️ Something went wrong sending your check-in.",
+          isUser: false,
+          timestamp: new Date()
+        }]);
+      }
+      setIsTyping(false);
+      return;
+    }
+
+    // Simulate AI response (default)
     setTimeout(() => {
       const aiMessage: Message = {
         id: messages.length + 2,

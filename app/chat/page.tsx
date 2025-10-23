@@ -379,18 +379,66 @@ export default function ChatPage() {
     if (!messageText.trim()) return;
 
     setShowChat(true);
-    
+
+    // Check-in intent detection
+    const trimmedText = messageText.trim();
+    const checkinRegex = /^(check in|\/checkin|checking in)\s*(.*)$/i;
+    const match = trimmedText.match(checkinRegex);
+
     const newMessage: Message = {
       id: Date.now(),
       text: messageText,
       isUser: true,
       timestamp: new Date()
     };
-
     setMessages(prev => [...prev, newMessage]);
     setInputText('');
     setIsTyping(true);
 
+    if (match) {
+      // Extract everything after the check-in phrase
+      const userMessage = match[2]?.trim() || "";
+      const safeMessage = userMessage || "No details provided";
+      try {
+        const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            Source: "Bloom",
+            First_Name: "Nykeira",
+            Last_Name: "McRoy",
+            Check_In: safeMessage,
+            Timestamp: new Date().toISOString()
+          })
+        });
+        if (res.ok) {
+          setMessages(prev => [...prev, {
+            id: Date.now() + 1,
+            text: `Got it — your check-in (“${safeMessage}”) was sent successfully!`,
+            isUser: false,
+            timestamp: new Date()
+          }]);
+        } else {
+          setMessages(prev => [...prev, {
+            id: Date.now() + 1,
+            text: "Something went wrong sending your check-in.",
+            isUser: false,
+            timestamp: new Date()
+          }]);
+        }
+      } catch (err) {
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          text: "Something went wrong sending your check-in.",
+          isUser: false,
+          timestamp: new Date()
+        }]);
+      }
+      setIsTyping(false);
+      return;
+    }
+
+    // Default: AI response
     try {
       const response = await getResponse(messageText);
       const botMessage: Message = {
