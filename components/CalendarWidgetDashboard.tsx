@@ -60,12 +60,15 @@ export default function CalendarWidgetDashboard({
   const [newEventTime, setNewEventTime] = useState('');
   const [newEventType, setNewEventType] = useState('Google Meet');
 
-  // Compute week header based on the selected month (week that contains the 1st of selected month)
-  const computeWeekDaysForMonth = () => {
-    const firstOfMonth = new Date(selectedYear, selectedMonth, 1);
-    // find the Sunday at or before the 1st
-    const start = new Date(firstOfMonth);
-    start.setDate(firstOfMonth.getDate() - firstOfMonth.getDay());
+  // Compute week header based on the week containing the selected date
+  const computeWeekDaysForSelectedDate = () => {
+    const year = selectedYear;
+    const month = selectedMonth;
+    const date = parseInt(selectedDate, 10);
+    const selected = new Date(year, month, date);
+    // find the Sunday at or before the selected date
+    const start = new Date(selected);
+    start.setDate(selected.getDate() - selected.getDay());
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
@@ -77,13 +80,12 @@ export default function CalendarWidgetDashboard({
     });
   };
 
-  const [weekDays, setWeekDays] = useState(computeWeekDaysForMonth());
+  const [weekDays, setWeekDays] = useState(computeWeekDaysForSelectedDate());
 
   useEffect(() => {
-    // when month or year changes, recompute week header and reset selected date to the 1st
-    setWeekDays(computeWeekDaysForMonth());
-    setSelectedDate('01');
-  }, [selectedMonth, selectedYear]);
+    // when month, year, or selected date changes, recompute week header
+    setWeekDays(computeWeekDaysForSelectedDate());
+  }, [selectedMonth, selectedYear, selectedDate]);
 
   const addEvent = () => {
     if (newEventTitle.trim() && newEventTime.trim()) {
@@ -112,25 +114,38 @@ export default function CalendarWidgetDashboard({
 
   return (
     <div>
-      {/* Week navigation */}
-      <div className="grid grid-cols-7 gap-1 mb-6 max-w-md mx-auto">
-        {weekDays.map((dayInfo, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div className="text-xs text-gray-500 mb-1">{dayInfo.day}</div>
-            <button 
-              onClick={() => setSelectedDate(dayInfo.date)}
-              className={`h-8 w-8 text-sm rounded-full transition-all font-medium border-0
-                ${dayInfo.isToday
-                  ? 'bg-gradient-to-r from-[#766de0] via-[#7d73e7] to-[#bcb4ee] text-white scale-105 shadow-sm'
-                  : selectedDate === dayInfo.date
-                  ? 'bg-[#bcb4ee] text-white scale-105 shadow-sm'
-                  : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}
-              `}
-            >
-              {dayInfo.date}
-            </button>
-          </div>
-        ))}
+      {/* Week navigation - compact and centered like calendar page */}
+      <div className="flex items-center justify-between mb-6">
+        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Previous week">
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+        <div className="flex items-center gap-2">
+          {weekDays.map((dayInfo, index) => (
+            <div key={index} className="text-center">
+              <div className="text-xs text-gray-500 mb-1 font-medium">{dayInfo.day}</div>
+              <button
+                onClick={() => setSelectedDate(dayInfo.date)}
+                className={`w-8 h-8 text-sm rounded-full transition-colors flex items-center justify-center
+                  ${selectedDate === dayInfo.date
+                    ? 'text-white font-medium bg-gradient-to-r from-[#766de0] via-[#7d73e7] to-[#bcb4ee]'
+                    : dayInfo.isToday
+                    ? 'text-white font-medium bg-[#736edd]'
+                    : 'text-gray-700 hover:bg-gray-100'}
+                `}
+                style={selectedDate === dayInfo.date || dayInfo.isToday ? {boxShadow: '0 2px 8px rgba(115,110,221,0.15)'} : {}}
+              >
+                {dayInfo.date}
+              </button>
+            </div>
+          ))}
+        </div>
+        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Next week">
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9,18 15,12 9,6"/>
+          </svg>
+        </button>
       </div>
       <div className="grid grid-cols-7 gap-1 w-full justify-items-center mt-1">
         {(() => {
