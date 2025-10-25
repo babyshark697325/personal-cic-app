@@ -12,8 +12,8 @@ interface Message {
   isUser: boolean;
   timestamp: Date;
   data?: {
-    type: 'project' | 'task' | 'reminder' | 'goal';
-    action: 'add' | 'update' | 'delete';
+    type: 'project' | 'task' | 'reminder' | 'goal' | 'checkin-confirm';
+    action: 'add' | 'update' | 'delete' | 'confirm';
     item: unknown;
   };
 }
@@ -259,6 +259,16 @@ const ChatHeader: React.FC<{ onBack: () => void }> = ({ onBack }) => (
 
 // Main Component
 export default function ChatPage() {
+  // Unique message ID counter
+  const messageIdRef = useRef(0);
+  const getUniqueMessageId = () => {
+    messageIdRef.current += 1;
+    return Date.now() + messageIdRef.current;
+  };
+  // Quality review modal state
+  const [showQualityModal, setShowQualityModal] = useState(false);
+  const [qualityModal, setQualityModal] = useState<{label: string, score: number, userMessage: string} | null>(null);
+  const [pendingCheckin, setPendingCheckin] = useState<string | null>(null);
   // State and Context
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
@@ -385,8 +395,52 @@ export default function ChatPage() {
     const checkinRegex = /^(check in|\/checkin|checking in)\s*(.*)$/i;
     const match = trimmedText.match(checkinRegex);
 
+    // Handle pending vague/neutral check-in confirmation
+    if (pendingCheckin && messages.length > 0 && messages[messages.length - 1].data?.type === 'checkin-confirm') {
+      const userReply = messageText.trim().toLowerCase();
+      if (userReply === 'yes') {
+        setIsTyping(true);
+        await sendCheckinToN8N(pendingCheckin);
+        setIsTyping(false);
+        setPendingCheckin(null);
+        setInputText('');
+        return;
+      } else if (userReply === 'cancel' || userReply === 'no') {
+        // Echo user's reply as a chat bubble
+        setMessages(prev => [
+          ...prev,
+          {
+            id: getUniqueMessageId(),
+            text: messageText,
+            isUser: true,
+            timestamp: new Date()
+          },
+          {
+            id: getUniqueMessageId(),
+            text: 'Check-in discarded.',
+            isUser: false,
+            timestamp: new Date()
+          }
+        ]);
+        setIsTyping(false);
+        setPendingCheckin(null);
+        setInputText('');
+        return;
+      }
+      // If not yes/cancel, prompt again
+      setMessages(prev => [...prev, {
+        id: getUniqueMessageId(),
+        text: "Please type 'yes' to submit or 'cancel' to discard your check-in.",
+        isUser: false,
+        timestamp: new Date()
+      }]);
+      setIsTyping(false);
+      return;
+    }
+
+    // Add user message only once
     const newMessage: Message = {
-      id: Date.now(),
+      id: getUniqueMessageId(),
       text: messageText,
       isUser: true,
       timestamp: new Date()
@@ -398,66 +452,105 @@ export default function ChatPage() {
     if (match) {
       // Extract everything after the check-in phrase
       const userMessage = match[2]?.trim() || "";
-      const safeMessage = userMessage || "No details provided";
+      setPendingCheckin(userMessage);
+      // Call Hugging Face Space endpoint for quality review
+      console.log("[Bloom Chat] Making request to Hugging Face Space endpoint for check-in quality review", {
+        endpoint: "https://user6295018-checkin-quality-classifier.hf.space/api/predict",
+        payload: { text: userMessage }
+      });
       try {
-        const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
+        const hfRes = await fetch("https://user6295018-checkin-quality-classifier.hf.space/api/predict", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            Source: "Bloom",
-            First_Name: "Nykeira",
-            Last_Name: "McRoy",
-            Check_In: safeMessage,
-            Timestamp: new Date().toISOString()
-          })
+          body: JSON.stringify({ text: userMessage }),
         });
-        if (res.ok) {
+
+        const rawText = await hfRes.text();
+        console.log("HF status:", hfRes.status);
+        console.log("HF raw response:", rawText);
+
+        if (!hfRes.ok) {
           setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            text: `Got it — your check-in (“${safeMessage}”) was sent successfully!`,
+            id: getUniqueMessageId(),
+            text: '⚠️ The model API returned HTTP ' + hfRes.status + '.',
             isUser: false,
             timestamp: new Date()
           }]);
-        } else {
-          setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            text: "Something went wrong sending your check-in.",
-            isUser: false,
-            timestamp: new Date()
-          }]);
+          setIsTyping(false);
+          return;
         }
-      } catch (err) {
+
+        let result: any;
+        try {
+          result = JSON.parse(rawText);
+        } catch (e) {
+          console.error("Could not parse JSON:", e);
+          setMessages(prev => [...prev, {
+            id: getUniqueMessageId(),
+            text: '⚠️ The model responded, but not in JSON. (CORS or Space config issue.)',
+            isUser: false,
+            timestamp: new Date()
+          }]);
+          setIsTyping(false);
+          return;
+        }
+
+        console.log("HF parsed JSON:", result);
+
+        const predictionFromData = result?.label || result?.data?.[0];
+        const prediction: string = predictionFromData || result?.prediction || "Unknown";
+
+        console.log("Normalized prediction:", prediction);
+
+        // Show classification and confirmation prompt
+        const lowerPrediction = prediction.toLowerCase();
+        if (
+          lowerPrediction.includes("vague") ||
+          lowerPrediction.includes("neutral") ||
+          lowerPrediction.includes("descriptive")
+        ) {
+          const classification = prediction.charAt(0).toUpperCase() + prediction.slice(1);
+          setMessages(prev => [...prev, {
+            id: getUniqueMessageId(),
+            text: `This check-in was classified as ${classification}. Are you sure you’d like to submit this check-in? Type 'yes' to submit or 'cancel' to discard.`,
+            isUser: false,
+            timestamp: new Date(),
+            data: { type: "checkin-confirm", action: "confirm", item: userMessage }
+          }]);
+          setPendingCheckin(userMessage);
+          setIsTyping(false);
+          return;
+        }
+
         setMessages(prev => [...prev, {
-          id: Date.now() + 1,
-          text: "Something went wrong sending your check-in.",
+          id: getUniqueMessageId(),
+          text: '⚠️ The model didn’t return a clear result. Try again.',
           isUser: false,
           timestamp: new Date()
         }]);
-      }
-      setIsTyping(false);
-      return;
-    }
+        setIsTyping(false);
+        return;
 
-    // Default: AI response
-    try {
+      } catch (err: any) {
+        console.error("Error rating check-in:", err);
+        setMessages(prev => [...prev, {
+          id: getUniqueMessageId(),
+          text: '⚠️ Something went wrong contacting the model: ' + (err.message || err),
+          isUser: false,
+          timestamp: new Date()
+        }]);
+        setIsTyping(false);
+        return;
+      }
+    } else {
+      // ...existing code for non-check-in messages...
       const response = await getResponse(messageText);
-      const botMessage: Message = {
-        id: Date.now() + 1,
+      setMessages(prev => [...prev, {
+        id: getUniqueMessageId(),
         text: response,
         isUser: false,
         timestamp: new Date()
-      };
-      setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
-      console.error('Error getting response:', error);
-      const errorMessage: Message = {
-        id: Date.now() + 1,
-        text: 'Sorry, I encountered an error processing your request.',
-        isUser: false,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
+      }]);
       setIsTyping(false);
     }
   }, [inputText, getResponse]);
@@ -476,6 +569,45 @@ export default function ChatPage() {
   }, []);
 
   // Render
+  // Helper to send check-in to n8n
+  const sendCheckinToN8N = async (userMessage: string) => {
+    const safeMessage = userMessage || "No details provided";
+    try {
+      const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Source: "Bloom",
+          First_Name: "Nykeira",
+          Last_Name: "McRoy",
+          Message: safeMessage,
+          Timestamp: new Date().toISOString()
+        })
+      });
+      if (res.ok) {
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          text: '✅ Got it — your check-in was sent successfully!',
+          isUser: false,
+          timestamp: new Date()
+        }]);
+      } else {
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          text: '⚠️ Something went wrong sending your check-in.',
+          isUser: false,
+          timestamp: new Date()
+        }]);
+      }
+    } catch (err) {
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        text: '⚠️ Something went wrong sending your check-in.',
+        isUser: false,
+        timestamp: new Date()
+      }]);
+    }
+  };
   if (!showChat) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white to-[#f0e8ff] p-4">
