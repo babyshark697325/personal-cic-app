@@ -107,7 +107,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
+  <div className="max-w-3xl mx-auto space-y-8 px-4 sm:px-0">
       {/* Header */}
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold text-slate-100">My CIC Program Timeline</h1>
@@ -117,7 +117,7 @@ export default function HistoryPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-xl border border-slate-700 p-4 text-center">
           <div className="text-2xl font-bold text-indigo-400">{checkins.length}</div>
           <div className="text-sm text-slate-300 font-medium">Reflections</div>

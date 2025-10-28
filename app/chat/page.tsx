@@ -211,16 +211,16 @@ const InputArea: React.FC<{
   onKeyPress: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   disabled?: boolean;
 }> = ({ value, onChange, onSend, onKeyPress, disabled = false }) => (
-  <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-6 px-4 pl-[280px]">
+  <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-4 px-2 sm:px-4">
     <div className="w-full max-w-2xl mx-auto">
-      <div className="bg-white border border-gray-200 rounded-full shadow-lg px-4 py-1 flex items-center gap-2 w-full">
+      <div className="bg-white border border-gray-200 rounded-full shadow-lg px-2 py-1 flex items-center gap-2 w-full">
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyPress={onKeyPress}
           placeholder="Ask Bloom AI anything..."
-          className="w-full px-4 py-3 border-0 rounded-full text-base text-gray-900 focus:outline-none bg-white placeholder-gray-400"
+          className="w-full px-3 py-2 border-0 rounded-full text-base text-gray-900 focus:outline-none bg-white placeholder-gray-400"
           disabled={disabled}
         />
         <button
@@ -642,12 +642,12 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-gradient-to-b from-white to-[#f0e8ff]">
+  <div className="min-h-screen flex flex-col relative bg-gradient-to-b from-white to-[#f0e8ff]">
       <ChatHeader onBack={handleBackToHome} />
 
       <div className="flex-1 px-0 pb-32 overflow-y-auto">
-        <div className="w-full pt-6 px-6">
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="w-full pt-4 px-2 sm:px-6">
+          <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-4">
             {messages.map((message) => (
               <MessageBubble key={message.id} message={message} />
             ))}

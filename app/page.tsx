@@ -177,7 +177,7 @@ export default function Home() {
   };
 
   return (
-    <main className="px-8 pt-8 pb-8 relative">
+  <main className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 relative max-w-2xl sm:max-w-full mx-auto w-full">
       {/* Grid background pattern with fade - starts at absolute top */}
       <div className="absolute inset-0 top-0">
         <div 
@@ -194,10 +194,10 @@ export default function Home() {
           }}
         ></div>
       </div>
-      <div className="px-8 pt-8 pb-8 relative">
+  <div className="px-0 sm:px-8 pt-0 sm:pt-8 pb-0 sm:pb-8 relative">
         {/* Dashboard Header Section */}
         <div className="relative pb-8">
-          <div className="flex items-end justify-between">
+    <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2">
             {/* Left side - Date and Greeting */}
             <div>
               <p className="text-sm text-gray-500 mb-6 mt-4">Mon, July 7</p>
@@ -323,7 +323,7 @@ export default function Home() {
         </div>
 
         {/* Dashboard Widget Grid - 2 Column layout */}
-        <div className="grid grid-cols-2 gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Left Column - My Tasks Widget */}
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
@@ -664,7 +664,7 @@ export default function Home() {
           </div>
 
           {/* Right Column - Projects and Calendar */}
-          <div className="space-y-6">
+          <div className="space-y-6 mt-6 sm:mt-0">
             {/* Projects Widget */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">
