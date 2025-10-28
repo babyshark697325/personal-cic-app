@@ -64,7 +64,7 @@ export default function CheckinPage() {
         </div>
       </div>
 
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 font-sans">
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 font-sans w-full">
         {/* Timeline Cards */}
   <div className="sm:col-span-2 col-span-1 flex flex-col gap-6 font-sans">
           {checkins.map((entry, idx) => (

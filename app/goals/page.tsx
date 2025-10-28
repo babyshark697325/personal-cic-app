@@ -3,18 +3,9 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Goal } from '../../types';
-import { Plus, ChevronLeft, Check, Calendar as CalendarIcon, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 
-// Animation for popup
-const popupAnimation = {
-  '@keyframes popup': {
-    '0%': { opacity: 0, transform: 'scale(0.95) translateY(-5px)' },
-    '100%': { opacity: 1, transform: 'scale(1) translateY(0)' },
-  },
-  '.animate-popup': {
-    animation: 'popup 0.15s ease-out',
-  },
-};
+// Removed unused popupAnimation
 
 export default function GoalsPage() {
   const { goals, addGoal, updateGoal, deleteGoal } = useAppContext();
@@ -62,77 +53,7 @@ export default function GoalsPage() {
     });
   };
 
-  // Sample data with subtasks
-  const sampleGoals: Goal[] = [
-    {
-      id: '1',
-      title: 'Complete project proposal',
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      progress: 33,
-      completed: false,
-      priority: 'high',
-      description: 'Finish the project proposal document and send for review',
-      subtasks: [
-        {
-          id: 's1',
-          title: 'Write executive summary',
-          completed: true,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
-        {
-          id: 's2',
-          title: 'Create project timeline',
-          completed: true,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
-        {
-          id: 's3',
-          title: 'Prepare budget',
-          completed: false,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      ],
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      id: '2',
-      title: 'Design new logo',
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      progress: 0,
-      completed: false,
-      priority: 'medium',
-      description: 'Create initial logo concepts for the new brand',
-      subtasks: [
-        {
-          id: 's4',
-          title: 'Research competitors',
-          completed: false,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
-        {
-          id: 's5',
-          title: 'Create mood board',
-          completed: false,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
-        {
-          id: 's6',
-          title: 'Design concepts',
-          completed: false,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      ],
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  ];
+  // Removed unused sampleGoals array
 
   // Use sample data if no goals exist
   const displayGoals = [...goals];
@@ -286,7 +207,7 @@ export default function GoalsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   return (
-  <div className="px-8 pt-8 pb-8">
+  <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 max-w-2xl sm:max-w-full mx-auto w-full">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -372,7 +293,7 @@ export default function GoalsPage() {
       </div>
       {/* Goals Grid (only in grid view) */}
       {viewMode === 'grid' && (
-        <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 mb-8">
+          <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-10 mb-8">
           {filteredGoals.length === 0 ? (
             <div className="col-span-full text-center text-gray-400 py-12 text-lg">
               No goals found.

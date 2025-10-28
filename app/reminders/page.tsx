@@ -29,7 +29,7 @@ export default function RemindersPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="px-8 pt-8 pb-8">
+      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 max-w-2xl sm:max-w-full mx-auto w-full">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -52,7 +52,7 @@ export default function RemindersPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
           {/* Reminders List */}
           <div className="col-span-2">
             <div className="bg-white rounded-lg p-6 border border-gray-200">

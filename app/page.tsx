@@ -43,7 +43,7 @@ const TaskSummaryModal: React.FC<TaskSummaryModalProps> = ({
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
       <div 
         ref={modalRef}
-        className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl"
+        className="bg-white rounded-2xl w-full max-w-md sm:max-w-lg md:max-w-xl overflow-hidden shadow-xl"
       >
         {/* Header with Bloom icon and close button */}
         <div className="relative">
@@ -58,13 +58,13 @@ const TaskSummaryModal: React.FC<TaskSummaryModalProps> = ({
         </div>
         
         {/* Content */}
-        <div className="px-6 pb-6">
+  <div className="px-4 sm:px-6 pb-6">
           <p className="text-gray-600 text-sm text-center mb-6">
             {children}
           </p>
           
           {/* Buttons */}
-          <div className="flex justify-center space-x-3 mt-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
             <button
               type="button"
               className="px-5 py-2 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-colors"
@@ -100,6 +100,9 @@ export default function Home() {
   const handleViewAllTasks = () => {
     window.location.href = '/tasks';
   };
+  // ...existing code...
+  // Responsive dashboard grid and cards
+  // Add responsive classes to all main containers, cards, and widgets below
 
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [newTaskName, setNewTaskName] = useState('');
@@ -137,7 +140,7 @@ export default function Home() {
   };
 
   const handleToggleTaskCompletion = (taskId: string) => {
-    updateTask(taskId, { completed: !tasks.find(t => t.id === taskId)?.completed });
+    updateTask(taskId, { completed: !tasks.find((t: any) => t.id === taskId)?.completed });
   };
 
   const handleToggleReminderCompletion = (reminderId: string) => {
@@ -149,9 +152,9 @@ export default function Home() {
   const getTasksByStatus = (status: string) => {
     switch (status) {
       case 'in-progress':
-        return tasks.filter(task => !task.completed);
+        return tasks.filter((task: any) => !task.completed);
       case 'completed':
-        return tasks.filter(task => task.completed);
+        return tasks.filter((task: any) => task.completed);
       default:
         return [];
     }
