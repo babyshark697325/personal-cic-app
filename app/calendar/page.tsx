@@ -16,7 +16,7 @@ export default function CalendarPage() {
   const currentDay = today.getDate();
   // State for selected month/year/date
   const [selectedMonth, setSelectedMonth] = useState(currentMonthIndex);
-  const [selectedYear, setSelectedYear] = useState(currentYear);
+    const [selectedYear] = useState(currentYear);
   const [selectedDate, setSelectedDate] = useState(currentDay.toString().padStart(2, '0'));
   const [events, setEvents] = useState([
     {
