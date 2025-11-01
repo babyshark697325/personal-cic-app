@@ -160,10 +160,10 @@ export default function TasksPage() {
   };
 
   return (
-    <main className="px-8 pt-8 pb-8">
+  <main className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 max-w-2xl sm:max-w-full mx-auto w-full">
         {/* Header */}
-        <div className="mb-8">
-            <div className="flex items-center justify-between">
+    <div className="mb-6 sm:mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div>
                 <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
                   My Tasks
@@ -260,7 +260,7 @@ export default function TasksPage() {
         </div>
 
         {/* Task Statistics */}
-        <div className="mt-8 grid grid-cols-3 gap-6">
+  <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="text-center">
               <div className="text-3xl font-bold text-gray-900 mb-1">

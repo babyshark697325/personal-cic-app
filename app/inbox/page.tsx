@@ -114,10 +114,10 @@ export default function InboxPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="px-8 pt-8 pb-8">
+      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
                 Inbox
@@ -144,7 +144,7 @@ export default function InboxPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {/* Message List */}
           <div className="col-span-1">
             <div className="bg-white rounded-lg border border-gray-200">
@@ -224,7 +224,7 @@ export default function InboxPage() {
           </div>
 
           {/* Message Detail */}
-          <div className="col-span-2">
+          <div className="sm:col-span-2 col-span-1">
             {selectedMessage ? (
               <div className="bg-white rounded-lg border border-gray-200">
                 <div className="border-b border-gray-200 p-6">

@@ -16,7 +16,7 @@ export default function CalendarPage() {
   const currentDay = today.getDate();
   // State for selected month/year/date
   const [selectedMonth, setSelectedMonth] = useState(currentMonthIndex);
-  const [selectedYear, setSelectedYear] = useState(currentYear);
+    const [selectedYear] = useState(currentYear);
   const [selectedDate, setSelectedDate] = useState(currentDay.toString().padStart(2, '0'));
   const [events, setEvents] = useState([
     {
@@ -94,10 +94,10 @@ export default function CalendarPage() {
   const selectedDateEvents = events.filter(event => event.date === selectedDate);
 
   return (
-    <main className="px-8 pt-8 pb-8">
+  <main className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 max-w-2xl sm:max-w-full mx-auto w-full">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div>
             <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
               Calendar
@@ -117,11 +117,11 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {/* Calendar Widget */}
-        <div className="col-span-2">
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="flex items-center justify-between mb-6">
+  <div className="sm:col-span-2 col-span-1">
+          <div className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-6">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -169,7 +169,7 @@ export default function CalendarPage() {
             </div>
 
             {/* Week navigation */}
-            <div className="grid grid-cols-7 gap-1 mb-6 max-w-md mx-auto">
+            <div className="grid grid-cols-7 gap-1 mb-6 max-w-md mx-auto w-full">
               {weekDays.map((dayInfo, index) => (
                 <div key={index} className="flex flex-col items-center">
                   <div className="text-xs text-gray-500 mb-1">{dayInfo.day}</div>
@@ -249,8 +249,8 @@ export default function CalendarPage() {
         </div>
 
         {/* Events for Selected Date */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
+  <div className="space-y-6 mt-6 sm:mt-0">
+          <div className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200">
               <h3 className="text-lg text-gray-800 font-sans mb-4" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
                 Events for {monthNames[selectedMonth]} {selectedDate}
               </h3>
@@ -311,7 +311,7 @@ export default function CalendarPage() {
             </div>
 
             {/* Quick Stats */}
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <div className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200">
               <h3 className="text-lg text-gray-800 font-sans mb-4" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>This Week</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
@@ -337,8 +337,8 @@ export default function CalendarPage() {
 
         {/* Add Event Form */}
         {showEventForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2">
+            <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Event</h3>
               <div className="space-y-4">
                 <div>

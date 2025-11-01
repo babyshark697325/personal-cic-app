@@ -49,10 +49,10 @@ export default function CheckinPage() {
   );
 
   return (
-    <main className="px-8 pt-8 pb-8 font-sans" style={{fontFamily: 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif'}}>
+  <main className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 font-sans max-w-2xl sm:max-w-full mx-auto w-full" style={{fontFamily: 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif'}}>
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div>
             <h1 className="text-4xl text-gray-800 leading-tight mb-2 font-sans">
               Check-Ins
@@ -64,9 +64,9 @@ export default function CheckinPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 font-sans">
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 font-sans w-full">
         {/* Timeline Cards */}
-        <div className="col-span-2 flex flex-col gap-6 font-sans">
+  <div className="sm:col-span-2 col-span-1 flex flex-col gap-6 font-sans">
           {checkins.map((entry, idx) => (
             <div key={idx} className="bg-white border border-gray-200 rounded-xl px-6 py-4 shadow-sm font-sans h-[7.75rem] flex flex-col justify-center">
               <div className="flex items-center justify-between mb-2 font-sans">
@@ -83,7 +83,7 @@ export default function CheckinPage() {
           ))}
         </div>
         {/* Stats Panel */}
-        <div className="flex flex-col gap-6 font-sans">
+  <div className="space-y-6 mt-6 sm:mt-0 font-sans">
           <div className="bg-white rounded-xl px-6 py-4 shadow-sm border border-gray-200 flex flex-col gap-2 font-sans">
             <h3 className="text-lg text-gray-800 font-sans mb-2" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Weekly Summary</h3>
             <span className="flex items-center gap-2 text-gray-800 text-base font-sans"><span className="font-bold font-sans">{summary.streak}</span> Check-ins</span>

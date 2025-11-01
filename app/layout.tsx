@@ -11,14 +11,11 @@ import { AppProvider } from "@/context/AppContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   
   const navItems = [
     { name: 'Home', href: '/', icon: 'home' },
@@ -102,64 +99,32 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="h-full">
-      <body className={`${inter.className} h-full bg-white`}>
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body className={inter.className}>
         <AppProvider>
-          <div className="flex min-h-full bg-white">
-            {/* Sidebar */}
-            <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-200 border-r border-gray-200 bg-white flex flex-col fixed top-0 left-0 bottom-0 z-10`}>
-              {/* Sidebar header */}
-              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-                {!sidebarCollapsed && <h1 className="text-xl font-bold text-gray-900">Bloom</h1>}
-                <button 
-                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                  className="text-[#736ee1] hover:text-[#5f5ac9] transition-colors"
-                  aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                >
-                  <svg 
-                    className="w-5 h-5" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                    style={{
-                      transform: sidebarCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s ease-in-out'
-                    }}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Navigation */}
-              <nav className="flex-1 px-2 py-6">
+          <div className="flex min-h-screen bg-gray-50">
+            {/* Sidebar for desktop */}
+            <aside className={`bg-white shadow-lg border-r border-gray-200 flex flex-col transition-all duration-300
+              ${sidebarCollapsed ? 'w-20' : 'w-64'}
+              hidden md:flex
+            `}>
+              {/* ...sidebar content... */}
+              <nav className="flex-1 px-2 py-4">
                 <ul className="space-y-1">
-                  {/* Home */}
                   <li>
-                    <Link 
-                      href="/"
-                      className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${
-                        pathname === '/' 
-                          ? 'bg-gray-100 text-gray-900' 
-                          : 'text-gray-700 hover:bg-gray-50'
-                      }`}
-                      title={sidebarCollapsed ? 'Home' : ''}
-                    >
+                    <Link href="/" className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${pathname === '/' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`} title={sidebarCollapsed ? 'Home' : ''}>
                       {renderIcon('home')}
                       {!sidebarCollapsed && <span>Home</span>}
                     </Link>
                   </li>
-                  
-                  {/* Navigation items */}
                   {navItems.slice(1).map((item) => (
                     <li key={item.name}>
                       <Link 
                         href={item.href}
-                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${
-                          pathname === item.href 
-                            ? 'bg-gray-100 text-gray-900' 
-                            : 'text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${pathname === item.href ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`}
                         title={sidebarCollapsed ? item.name : ''}
                       >
                         {renderIcon(item.icon)}
@@ -169,7 +134,6 @@ export default function RootLayout({
                   ))}
                 </ul>
               </nav>
-
               {/* Projects Section */}
               <div className="mt-8">
                 <div className={`${sidebarCollapsed ? 'px-2' : 'px-3'} mb-4`}>
@@ -190,10 +154,7 @@ export default function RootLayout({
                         className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-2 hover:bg-gray-50 rounded-lg transition-colors`}
                         title={sidebarCollapsed ? project : ''}
                       >
-                        <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                          index === 0 ? 'bg-purple-500' : 
-                          index === 1 ? 'bg-blue-500' : 'bg-teal-500'
-                        }`}></div>
+                        <div className={`w-3 h-3 rounded-full flex-shrink-0 ${index === 0 ? 'bg-purple-500' : index === 1 ? 'bg-blue-500' : 'bg-teal-500'}`}></div>
                         {!sidebarCollapsed && (
                           <span className="text-sm text-gray-700 truncate">{project}</span>
                         )}
@@ -202,7 +163,6 @@ export default function RootLayout({
                   ))}
                 </ul>
               </div>
-
               {/* Bottom Section */}
               <div className="p-2 border-t border-gray-200 mt-auto">
                 <button 
@@ -216,17 +176,28 @@ export default function RootLayout({
                   {!sidebarCollapsed && <span>Settings</span>}
                 </button>
               </div>
-            </div>
-
+            </aside>
+            {/* Sidebar for mobile */}
+            <aside className={`fixed inset-y-0 left-0 z-40 bg-white shadow-lg border-r border-gray-200 flex flex-col w-64 transition-transform duration-300 md:hidden
+              ${mobileNavOpen ? 'translate-x-0' : '-translate-x-full'}
+            `}>
+              {/* ...sidebar content... */}
+              <button className="absolute top-4 right-4 p-2" onClick={() => setMobileNavOpen(false)}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </aside>
             {/* Main Content */}
-            <div className="flex-1 overflow-auto bg-white" style={{
-              marginLeft: sidebarCollapsed ? '4rem' : '16rem',
-              transition: 'margin-left 0.2s ease-in-out',
-              minHeight: '100vh'
-            }}>
-              <div className="min-h-full">
+            <div className="flex-1 flex flex-col">
+              {/* Topbar for mobile */}
+              <header className="md:hidden bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 h-16">
+                <button className="p-2" onClick={() => setMobileNavOpen(true)}>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
+                <FlowerIcon className="h-8 w-8 text-indigo-500" />
+              </header>
+              <main className="flex-1 w-full max-w-full px-2 sm:px-4 md:px-8 py-6 mx-auto">
                 {children}
-              </div>
+              </main>
             </div>
           </div>
         </AppProvider>

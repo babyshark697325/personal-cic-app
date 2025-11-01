@@ -380,7 +380,11 @@ export default function ChatPage() {
 
     setShowChat(true);
 
-    // Add user message to chat
+    // Check-in intent detection
+    const trimmedText = messageText.trim();
+    const checkinRegex = /^(check in|\/checkin|checking in)\s*(.*)$/i;
+    const match = trimmedText.match(checkinRegex);
+
     const newMessage: Message = {
       id: Date.now(),
       text: messageText,
@@ -388,58 +392,53 @@ export default function ChatPage() {
       timestamp: new Date()
     };
     setMessages(prev => [...prev, newMessage]);
-    setInputText("");
+    setInputText('');
     setIsTyping(true);
 
-    // Only POST to n8n webhook if message contains summary, summarize, or how was my week
-    const lowerText = messageText.toLowerCase();
-    if (
-      lowerText.includes('summary') ||
-      lowerText.includes('summarize') ||
-      lowerText.includes('how was my week')
-    ) {
+    if (match) {
+      // Extract everything after the check-in phrase
+      const userMessage = match[2]?.trim() || "";
+      const safeMessage = userMessage || "No details provided";
       try {
-        const payload = {
-          user: "Nykeira",
-          message: messageText,
-          timestamp: new Date().toISOString()
-        };
-        const res = await fetch("http://localhost:5678/webhook-test/bloom-chat", {
+        const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({
+            Source: "Bloom",
+            First_Name: "Nykeira",
+            Last_Name: "McRoy",
+            Check_In: safeMessage,
+            Timestamp: new Date().toISOString()
+          })
         });
-        if (!res.ok) {
-          throw new Error("Failed to get Bloom's reflection");
+        if (res.ok) {
+          setMessages(prev => [...prev, {
+            id: Date.now() + 1,
+            text: `Got it — your check-in (“${safeMessage}”) was sent successfully!`,
+            isUser: false,
+            timestamp: new Date()
+          }]);
+        } else {
+          setMessages(prev => [...prev, {
+            id: Date.now() + 1,
+            text: "Something went wrong sending your check-in.",
+            isUser: false,
+            timestamp: new Date()
+          }]);
         }
-        const data = await res.json();
-        // Display Bloom's reply
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now() + 1,
-            text: data.text || "(No reflection received)",
-            isUser: false,
-            timestamp: new Date()
-          }
-        ]);
-      } catch (error) {
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now() + 1,
-            text: "Sorry, I couldn't get Bloom's reflection.",
-            isUser: false,
-            timestamp: new Date()
-          }
-        ]);
-      } finally {
-        setIsTyping(false);
+      } catch (err) {
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          text: "Something went wrong sending your check-in.",
+          isUser: false,
+          timestamp: new Date()
+        }]);
       }
+      setIsTyping(false);
       return;
     }
 
-    // Otherwise, fallback to default response logic
+    // Default: AI response
     try {
       const response = await getResponse(messageText);
       const botMessage: Message = {

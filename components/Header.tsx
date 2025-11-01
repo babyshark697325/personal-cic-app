@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function Header() {
   const pathname = usePathname();
@@ -12,6 +13,7 @@ export default function Header() {
     { href: "/chat", label: "Insights" },
   ];
 
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   return (
     <header className="bg-slate-900/80 backdrop-blur border-b border-slate-700 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,6 +32,7 @@ export default function Header() {
           </div>
           
           {/* Navigation */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
@@ -45,6 +48,26 @@ export default function Header() {
               </Link>
             ))}
           </nav>
+          {/* Mobile Navigation */}
+          <nav className={`md:hidden fixed top-16 left-0 w-full bg-slate-900/95 z-50 transition-transform duration-300 ${mobileNavOpen ? 'translate-y-0' : '-translate-y-full'}`}>
+            <ul className="flex flex-col items-center py-4 gap-4">
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`text-lg font-medium block px-4 py-2 rounded transition-colors duration-200 ${
+                      pathname === item.href
+                        ? "text-indigo-400 bg-slate-800"
+                        : "text-slate-300 hover:text-indigo-400"
+                    }`}
+                    onClick={() => setMobileNavOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           {/* Quick Action Button */}
           <div className="flex items-center space-x-4">
@@ -58,7 +81,7 @@ export default function Header() {
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <button className="text-slate-300 hover:text-slate-100 p-2">
+            <button className="text-slate-300 hover:text-slate-100 p-2" onClick={() => setMobileNavOpen(!mobileNavOpen)} aria-label="Open navigation menu">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>

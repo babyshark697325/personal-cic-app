@@ -57,10 +57,10 @@ export default function ReportsPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="px-8 pt-8 pb-8">
+      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <h1 className="text-4xl text-gray-800 leading-tight mb-2" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
                 Reports & Analytics
@@ -108,7 +108,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-5 gap-6 mb-8">
+  <div className="grid grid-cols-2 sm:grid-cols-5 gap-6 mb-8">
           <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-600 mb-1">{weeklyStats.tasksCompleted}</div>
@@ -150,9 +150,9 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {/* Progress Chart */}
-          <div className="col-span-2">
+          <div className="sm:col-span-2 col-span-1">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-medium text-gray-900">Daily Activity</h2>
