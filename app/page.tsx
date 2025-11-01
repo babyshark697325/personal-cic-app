@@ -250,15 +250,13 @@ export default function Home() {
         {/* Dashboard Header Section */}
         <div className="relative pb-8">
     <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2">
-            {/* Left side - Date and Greeting, horizontally aligned, original font weight */}
-            <div className="flex flex-col items-start flex-1">
-              <p className="text-sm text-gray-500 mb-2 mt-4">Mon, July 7</p>
-              <div className="flex flex-wrap items-center gap-4">
-                <h1 className="text-4xl text-gray-800 leading-tight" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>Hello, Keira</h1>
-                <p className="text-4xl bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent leading-tight m-0" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
-                  How can I help you today?
-                </p>
-              </div>
+            {/* Left side - Date and Greeting stacked vertically, flush left */}
+            <div className="flex flex-col items-start flex-1 min-w-[420px]">
+              <p className="text-sm text-gray-500 mb-2 mt-20">Mon, July 7</p>
+              <h1 className="text-4xl text-gray-800 leading-tight mb-0" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>Hello, Keira</h1>
+              <p className="text-4xl bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent leading-tight mt-0 mb-0" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
+                How can I help you today?
+              </p>
             </div>
 
             {/* Right side - Action Buttons aligned with second line */}
