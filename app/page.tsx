@@ -180,7 +180,7 @@ export default function Home() {
   };
 
   return (
-  <main className="px-2 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 relative w-full max-w-full mx-auto overflow-x-hidden">
+  <main className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 relative max-w-2xl sm:max-w-full mx-auto w-full">
       {/* Grid background pattern with fade - starts at absolute top */}
       <div className="absolute inset-0 top-0">
         <div 
@@ -199,54 +199,134 @@ export default function Home() {
       </div>
   <div className="px-0 sm:px-8 pt-0 sm:pt-8 pb-0 sm:pb-8 relative">
         {/* Dashboard Header Section */}
-        <div className="relative pb-8 w-full max-w-full overflow-x-hidden">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 w-full max-w-full overflow-x-hidden">
+        <div className="relative pb-8">
+    <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2">
             {/* Left side - Date and Greeting */}
-            <div className="w-full">
-              <p className="text-xs sm:text-sm text-gray-500 mb-4 mt-2">Mon, July 7</p>
+            <div>
+              <p className="text-sm text-gray-500 mb-6 mt-4">Mon, July 7</p>
               <div className="space-y-1">
-                <h1 className="text-2xl sm:text-4xl text-gray-800 leading-tight break-words max-w-xs sm:max-w-full" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>Hello, Keira</h1>
+                <h1 className="text-4xl text-gray-800 leading-tight" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Hello, Keira</h1>
                 <div className="flex items-center">
-                  <p className="text-base sm:text-2xl bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent leading-tight break-words max-w-xs sm:max-w-full" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
+                  <p className="text-4xl bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent leading-tight" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
                     How can I help you today?
                   </p>
                 </div>
               </div>
             </div>
+
             {/* Right side - Action Buttons aligned with second line */}
-            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto mt-4 sm:mt-0">
+            <div className="flex items-center space-x-4 mb-1">
+              {/* Ask AI button - filled gradient pill */}
               <a 
                 href="/chat"
-                className="h-12 sm:h-10 px-6 sm:px-5 text-white text-base sm:text-sm font-medium rounded-full hover:opacity-90 transition-all flex items-center justify-center" 
+                className="h-10 px-5 text-white text-sm font-medium rounded-full hover:opacity-90 transition-all flex items-center justify-center" 
                 style={{background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}}
               >
                 Ask AI
               </a>
-              <button
-                className="h-12 sm:h-10 px-6 sm:px-5 bg-gray-50 text-black text-base sm:text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
-                onClick={() => {
-                  // ...existing code...
-                  const today = new Date();
-                  today.setHours(0, 0, 0, 0);
-                  const endOfWeek = new Date(today);
-                  endOfWeek.setDate(today.getDate() + 6);
-                  endOfWeek.setHours(23, 59, 59, 999);
-                  const tasksDueToday = tasks.filter(task => task.dueDate && new Date(task.dueDate).toDateString() === today.toDateString());
-                  const completedTasks = tasks.filter(task => task.completed);
-                  const upcomingThisWeek = tasks.filter(task => task.dueDate && !task.completed && new Date(task.dueDate) > today && new Date(task.dueDate) <= endOfWeek);
-                  const summary = `You have ${tasksDueToday.length} task${tasksDueToday.length !== 1 ? 's' : ''} due today, ${completedTasks.length} completed, and ${upcomingThisWeek.length} upcoming this week.`;
-                  setTaskSummary(summary);
-                  setShowTaskSummary(true);
-                }}
-              >
-                Get tasks updates
-              </button>
+
+              {/* Task Management */}
+              <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
+                <button 
+                  onClick={() => {
+                    // Get current date and calculate start/end of week
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const endOfWeek = new Date(today);
+                    endOfWeek.setDate(today.getDate() + 6);
+                    endOfWeek.setHours(23, 59, 59, 999);
+                    
+                    // Filter tasks
+                    const tasksDueToday = tasks.filter(task => 
+                      task.dueDate && 
+                      new Date(task.dueDate).toDateString() === today.toDateString()
+                    );
+                    
+                    const completedTasks = tasks.filter(task => task.completed);
+                    
+                    const upcomingThisWeek = tasks.filter(task => 
+                      task.dueDate && 
+                      !task.completed &&
+                      new Date(task.dueDate) > today &&
+                      new Date(task.dueDate) <= endOfWeek
+                    );
+                    
+                    // Create summary message
+                    const summary = `You have ${tasksDueToday.length} task${tasksDueToday.length !== 1 ? 's' : ''} due today, ${completedTasks.length} completed, and ${upcomingThisWeek.length} upcoming this week.`;
+                    
+                    // Show the summary in our custom modal
+                    setTaskSummary(summary);
+                    setShowTaskSummary(true);
+                  }}
+                  className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
+                >
+                  Get tasks updates
+                </button>
+              </div>
+
+              {/* Workspace Management */}
+              <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
+                <button 
+                  onClick={() => {
+                    const action = prompt('Workspace Management\n\n1. Create new workspace\n2. View all workspaces\n\nEnter your choice (1-2):');
+                    
+                    if (action === '1') {
+                      const workspaceName = prompt('Enter workspace name:');
+                      if (workspaceName) {
+                        addProject({
+                          name: workspaceName,
+                          description: prompt('Workspace description (optional):') || '',
+                          color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
+                        });
+                        alert(`✅ Workspace "${workspaceName}" created successfully!`);
+                      }
+                    } else if (action === '2') {
+                      const projects: Array<{name: string; description?: string}> = []; // Get projects from your context
+                      if (projects.length === 0) {
+                        alert('No workspaces found.');
+                      } else {
+                        alert('Your Workspaces:\n\n' + 
+                          projects.map(p => `• ${p.name}${p.description ? ` - ${p.description}` : ''}`).join('\n')
+                        );
+                      }
+                    }
+                  }}
+                  className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
+                >
+                  Create workspace
+                </button>
+              </div>
+
+              {/* App Integration */}
+              <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
+                <button 
+                  onClick={() => {
+                    const app = prompt('App Integration\n\n1. Google Calendar\n2. Slack\n3. Email\n4. Other...\n\nSelect an app to connect:');
+                    
+                    if (app) {
+                      const appName = {
+                        '1': 'Google Calendar',
+                        '2': 'Slack',
+                        '3': 'Email',
+                        '4': prompt('Enter app name:')
+                      }[app] || 'the selected app';
+                      
+                      if (appName) {
+                        alert(`🔌 Connecting to ${appName}...\n\nThis would typically open an OAuth flow or connection settings for ${appName} in a real application.`);
+                      }
+                    }
+                  }}
+                  className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
+                >
+                  Connect apps
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Dashboard Widget Grid - 2 Column layout */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-full overflow-x-hidden">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Left Column - My Tasks Widget */}
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
