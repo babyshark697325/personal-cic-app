@@ -180,24 +180,26 @@ export default function Home() {
   };
 
   return (
-  <main className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 relative max-w-2xl sm:max-w-full mx-auto w-full">
-      {/* Grid background pattern with fade - starts at absolute top */}
-      <div className="absolute inset-0 top-0">
-        <div 
-          className="w-full"
-          style={{
-            height: '280px',
-            backgroundImage: `
-              linear-gradient(to right, #9ca3af 1px, transparent 1px),
-              linear-gradient(to bottom, #9ca3af 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)'
-          }}
-        ></div>
-      </div>
-  <div className="px-0 sm:px-8 pt-0 sm:pt-8 pb-0 sm:pb-8 relative">
+  <main className="px-4 sm:px-8 pb-24 sm:pb-8 relative max-w-2xl sm:max-w-full mx-auto w-full">
+    {/* Grid background pattern with fade - starts at very top, behind header */}
+    <div className="fixed inset-0 top-0 left-0 w-full pointer-events-none" style={{zIndex: 0}}>
+      <div
+        className="w-full"
+        style={{
+          height: '480px',
+          marginLeft: '260px', // Further increased sidebar width
+          width: 'calc(100% - 260px)',
+          backgroundImage: `
+            linear-gradient(to right, #9ca3af 1px, transparent 1px),
+            linear-gradient(to bottom, #9ca3af 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.05) 70%, transparent 90%)'
+        }}
+      ></div>
+    </div>
+  <div className="px-0 sm:px-8 pb-0 sm:pb-8 relative">
         {/* Dashboard Header Section */}
         <div className="relative pb-8">
     <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2">
