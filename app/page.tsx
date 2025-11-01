@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAppContext } from '@/context/AppContext';
 import FlowerIcon from '@/components/FlowerIcon';
 import CalendarWidgetDashboard from '@/components/CalendarWidgetDashboard';
+import type { Task } from '@/types';
 
 // Custom modal component
 interface TaskSummaryModalProps {
@@ -119,7 +120,58 @@ export default function Home() {
   ];
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
-  
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const endOfToday = new Date(startOfToday);
+  endOfToday.setHours(23, 59, 59, 999);
+
+  const inProgressTasks = tasks.filter((task: Task) => {
+    if (task.completed || !task.dueDate) {
+      return false;
+    }
+    const dueDate = new Date(task.dueDate);
+    return dueDate <= endOfToday;
+  });
+
+  const todoTasks = tasks.filter(
+    (task: Task) => !task.completed && !task.dueDate
+  );
+
+  const upcomingTasks = tasks.filter((task: Task) => {
+    if (task.completed || !task.dueDate) {
+      return false;
+    }
+    const dueDate = new Date(task.dueDate);
+    return dueDate > endOfToday;
+  });
+
+  const taskSections = [
+    {
+      key: 'inProgress' as const,
+      label: 'IN PROGRESS',
+      color: '#ace8eb',
+      tasks: inProgressTasks,
+      emptyLabel: 'No tasks in progress',
+      showDueDate: true,
+    },
+    {
+      key: 'todo' as const,
+      label: 'TO DO',
+      color: '#f4f6f8',
+      tasks: todoTasks,
+      emptyLabel: 'No tasks in this section',
+    },
+    {
+      key: 'upcoming' as const,
+      label: 'UPCOMING',
+      color: '#f8d4ae',
+      tasks: upcomingTasks,
+      emptyLabel: 'No upcoming tasks',
+      showDueDate: true,
+    },
+  ];
+
   const toggleSection = (section: 'inProgress' | 'todo' | 'upcoming') => {
     setExpandedSections(prev => ({
       ...prev,
@@ -140,7 +192,11 @@ export default function Home() {
   };
 
   const handleToggleTaskCompletion = (taskId: string) => {
-    updateTask(taskId, { completed: !tasks.find((t: any) => t.id === taskId)?.completed });
+    const taskToToggle = tasks.find((task) => task.id === taskId);
+    if (!taskToToggle) {
+      return;
+    }
+    updateTask(taskId, { completed: !taskToToggle.completed });
   };
 
   const handleToggleReminderCompletion = (reminderId: string) => {
@@ -148,23 +204,14 @@ export default function Home() {
     // This would need to be added to the Reminder interface
   };
 
-  // Helper functions for filtering tasks by status
-  const getTasksByStatus = (status: string) => {
-    switch (status) {
-      case 'in-progress':
-        return tasks.filter((task: any) => !task.completed);
-      case 'completed':
-        return tasks.filter((task: any) => task.completed);
-      default:
-        return [];
-    }
-  };
-
   // Helper function to format due date
-  const formatDueDate = (dueDate?: Date) => {
+  const formatDueDate = (dueDate?: Date | string) => {
     if (!dueDate) return 'No date';
     const today = new Date();
     const taskDate = new Date(dueDate);
+    if (Number.isNaN(taskDate.getTime())) {
+      return 'No date';
+    }
     today.setHours(0, 0, 0, 0);
     taskDate.setHours(0, 0, 0, 0);
 
@@ -199,20 +246,18 @@ export default function Home() {
         }}
       ></div>
     </div>
-  <div className="px-0 sm:px-8 pb-0 sm:pb-8 relative">
+  <div className="px-0 sm:px-2 pb-0 sm:pb-8 relative">
         {/* Dashboard Header Section */}
         <div className="relative pb-8">
     <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2">
-            {/* Left side - Date and Greeting */}
-            <div>
-              <p className="text-sm text-gray-500 mb-6 mt-4">Mon, July 7</p>
-              <div className="space-y-1">
-                <h1 className="text-4xl text-gray-800 leading-tight" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>Hello, Keira</h1>
-                <div className="flex items-center">
-                  <p className="text-4xl bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent leading-tight" style={{fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'}}>
-                    How can I help you today?
-                  </p>
-                </div>
+            {/* Left side - Date and Greeting, horizontally aligned, original font weight */}
+            <div className="flex flex-col items-start flex-1">
+              <p className="text-sm text-gray-500 mb-2 mt-4">Mon, July 7</p>
+              <div className="flex flex-wrap items-center gap-4">
+                <h1 className="text-4xl text-gray-800 leading-tight" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>Hello, Keira</h1>
+                <p className="text-4xl bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent leading-tight m-0" style={{fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'}}>
+                  How can I help you today?
+                </p>
               </div>
             </div>
 
@@ -386,11 +431,11 @@ export default function Home() {
                   </svg>
                 </button>
                 <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#ace8eb'}}>IN PROGRESS</span>
-                <span className="text-sm text-gray-600">• {getTasksByStatus('in-progress').length} task{getTasksByStatus('in-progress').length !== 1 ? 's' : ''}</span>
+                <span className="text-sm text-gray-600">• {inProgressTasks.length} task{inProgressTasks.length !== 1 ? 's' : ''}</span>
               </div>
               {expandedSections.inProgress && (
                 <div className="pl-6">
-                  {getTasksByStatus('in-progress').length > 0 ? (
+                  {inProgressTasks.length > 0 ? (
                     <>
                       {/* Column Headers - Only show when there are tasks */}
                       <div className="flex text-xs text-gray-500 mb-2 px-4">
@@ -401,7 +446,7 @@ export default function Home() {
                       
                       {/* Task List */}
                       <div className="space-y-2">
-                        {getTasksByStatus('in-progress').map(task => (
+                        {inProgressTasks.map(task => (
                           <div key={task.id} className="flex items-center p-2 hover:bg-gray-50 rounded">
                             <input
                               type="checkbox"
@@ -429,7 +474,7 @@ export default function Home() {
 
               {/* Task Items */}
               <div className="divide-y divide-gray-100">
-                {getTasksByStatus('in-progress').map((task) => (
+                {inProgressTasks.map((task) => (
                   <div key={task.id} className="flex items-center gap-2 p-3 hover:bg-gray-50">
                     <button 
                       onClick={() => handleToggleTaskCompletion(task.id)}
@@ -534,13 +579,13 @@ export default function Home() {
                   </svg>
                 </button>
                 <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#f4f6f8'}}>TO DO</span>
-                <span className="text-sm text-gray-600">• {getTasksByStatus('in-progress').length} task{getTasksByStatus('in-progress').length !== 1 ? 's' : ''}</span>
+                <span className="text-sm text-gray-600">• {inProgressTasks.length} task{inProgressTasks.length !== 1 ? 's' : ''}</span>
               </div>
               {expandedSections.todo && (
                 <div className="pl-6">
-                  {getTasksByStatus('in-progress').length > 0 ? (
+                  {inProgressTasks.length > 0 ? (
                     <div className="space-y-2">
-                      {getTasksByStatus('in-progress').map(task => (
+                      {inProgressTasks.map(task => (
                         <div key={task.id} className="flex items-center p-2 hover:bg-gray-50 rounded">
                           <input
                             type="checkbox"
