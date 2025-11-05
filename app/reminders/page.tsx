@@ -28,7 +28,7 @@ export default function RemindersPage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+  <div className="bg-gradient-to-b from-white to-[#f0e8ff] min-h-screen">
       <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 max-w-2xl sm:max-w-full mx-auto w-full">
         {/* Header */}
         <div className="mb-8">

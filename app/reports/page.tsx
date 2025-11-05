@@ -56,7 +56,7 @@ export default function ReportsPage() {
   const maxHours = Math.max(...chartData.map(d => d.hours));
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+  <div className="bg-gradient-to-b from-white to-[#f0e8ff] min-h-screen">
       <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">

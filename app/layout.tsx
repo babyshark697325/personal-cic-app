@@ -105,9 +105,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className}>
         <AppProvider>
-          <div className="flex min-h-screen bg-gray-50">
+          <div className="flex min-h-screen items-stretch bg-gradient-to-b from-white to-[#f0e8ff]">
             {/* Sidebar for desktop */}
-            <aside className={`bg-white shadow-lg border-r border-gray-200 flex flex-col transition-all duration-300
+            <aside className={`bg-white shadow-lg border-r border-gray-200 flex flex-col h-screen min-h-0 overflow-y-auto transition-all duration-300
               ${sidebarCollapsed ? 'w-20' : 'w-64'}
               hidden md:flex
             `}>
@@ -115,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <nav className="flex-1 px-2 py-4">
                 <ul className="space-y-1">
                   <li>
-                    <Link href="/" className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${pathname === '/' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`} title={sidebarCollapsed ? 'Home' : ''}>
+                    <Link href="/" className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-2 px-3'} py-2 rounded-lg text-sm w-full text-left transition-colors ${pathname === '/' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`} title={sidebarCollapsed ? 'Home' : ''}>
                       {renderIcon('home')}
                       {!sidebarCollapsed && <span>Home</span>}
                     </Link>
@@ -124,7 +124,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <li key={item.name}>
                       <Link 
                         href={item.href}
-                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm w-full text-left transition-colors ${pathname === item.href ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`}
+                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-2 px-3'} py-2 rounded-lg text-sm w-full text-left transition-colors ${pathname === item.href ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`}
                         title={sidebarCollapsed ? item.name : ''}
                       >
                         {renderIcon(item.icon)}
@@ -137,14 +137,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Projects Section */}
               <div className="mt-8">
                 <div className={`${sidebarCollapsed ? 'px-2' : 'px-3'} mb-4`}>
-                  {!sidebarCollapsed && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-900">My Projects</span>
-                      <button className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700">
-                        <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f0efff', color: '#736ee1'}}>+ Add</span>
-                      </button>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-900">My Projects</span>
+                    <button className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f0efff', color: '#736ee1'}}>+ Add</span>
+                    </button>
+                  </div>
                 </div>
                 <ul className="space-y-1 px-2">
                   {['Product launch', 'Team brainstorm', 'Branding launch'].map((project, index) => (
@@ -164,7 +162,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </ul>
               </div>
               {/* Bottom Section */}
-              <div className="p-2 border-t border-gray-200 mt-auto">
+              <div className="p-2 border-t border-gray-200">
                 <button 
                   className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-3 px-3'} py-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 w-full transition-colors`}
                   title={sidebarCollapsed ? 'Settings' : ''}
@@ -187,7 +185,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </button>
             </aside>
             {/* Main Content */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col min-w-0">
               {/* Topbar for mobile */}
               <header className="md:hidden bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 h-16">
                 <button className="p-2" onClick={() => setMobileNavOpen(true)}>
@@ -195,7 +193,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </button>
                 <FlowerIcon className="h-8 w-8 text-indigo-500" />
               </header>
-              <main className="flex-1 w-full max-w-full px-2 sm:px-4 md:px-8 py-6 mx-auto">
+              <main className="flex-1 w-full min-w-0">
                 {children}
               </main>
             </div>
