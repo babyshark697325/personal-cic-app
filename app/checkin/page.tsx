@@ -78,62 +78,7 @@ export default function CheckinPage() {
   <main className="px-4 sm:px-8 pt-6 sm:pt-8 pb-24 sm:pb-8 font-sans max-w-2xl sm:max-w-full mx-auto w-full" style={{fontFamily: 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif'}}>
   {/* Header */}
       {/* Check-in Input & Bloom Assistant Rating */}
-      <div className="mb-8">
-        <div className="bg-white border border-gray-200 rounded-xl px-6 py-4 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">New Check-In</h2>
-          <textarea
-            className="w-full border border-gray-300 rounded-lg p-3 text-base mb-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-200"
-            rows={3}
-            placeholder="How are you feeling about your work today?"
-            value={checkinText}
-            onChange={e => {
-              setCheckinText(e.target.value);
-              setBloomRating(null);
-            }}
-            disabled={submitting}
-          />
-          <div className="flex gap-2">
-            <button
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-              disabled={!checkinText || submitting}
-              onClick={async () => {
-                await rateCheckin(checkinText);
-                // If Descriptive, auto-submit
-                if (bloomRating && bloomRating.feedback.startsWith("Clear,")) {
-                  handleSubmit();
-                }
-              }}
-            >
-              {submitting ? "Rating..." : "Get Bloom Rating"}
-            </button>
-            {/* Only show submit button if not Descriptive */}
-            {bloomRating && !bloomRating.feedback.startsWith("Clear,") && (
-              <button
-                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition disabled:opacity-50"
-                disabled={submitting}
-                onClick={handleSubmit}
-              >
-                Submit Check-In
-              </button>
-            )}
-          </div>
-          {bloomRating && (
-            <div className="mt-4">
-              <div className="mb-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="text-sm text-gray-800 mb-1">Your check-in:</div>
-                <div className="text-base text-gray-900">{checkinText}</div>
-              </div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-base font-semibold text-indigo-600">Bloom Model: <span className="font-bold">{bloomRating.feedback.split(' ')[0]}</span></span>
-                <span className="text-sm text-gray-700">{bloomRating.feedback}</span>
-              </div>
-              <div className="mt-2">
-                <span className="text-sm text-gray-800">Are you sure you want to submit this check-in?</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* ...existing code... */}
       <div className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div>

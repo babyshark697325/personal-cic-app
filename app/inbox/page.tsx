@@ -147,7 +147,7 @@ export default function InboxPage() {
   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {/* Message List */}
           <div className="col-span-1">
-            <div className="bg-white rounded-lg border border-gray-200">
+            <div className="bg-white rounded-lg border border-gray-200 h-[32rem] flex flex-col">
               {/* Filter Tabs */}
               <div className="border-b border-gray-200 p-4">
                 <div className="flex space-x-1">
@@ -173,7 +173,7 @@ export default function InboxPage() {
               </div>
 
               {/* Message Items */}
-              <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+              <div className="divide-y divide-gray-100 flex-1 overflow-y-auto">
                 {filteredMessages.map((message) => (
                   <button
                     key={message.id}
@@ -226,7 +226,7 @@ export default function InboxPage() {
           {/* Message Detail */}
           <div className="sm:col-span-2 col-span-1">
             {selectedMessage ? (
-              <div className="bg-white rounded-lg border border-gray-200">
+              <div className="bg-white rounded-lg border border-gray-200 h-[32rem] flex flex-col">
                 <div className="border-b border-gray-200 p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
@@ -308,7 +308,7 @@ export default function InboxPage() {
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-lg border border-gray-200 flex items-center justify-center h-96">
+              <div className="bg-white rounded-lg border border-gray-200 flex items-center justify-center h-[32rem]">
                 <div className="text-center">
                   <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>

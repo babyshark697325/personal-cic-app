@@ -264,6 +264,7 @@ export default function ChatPage() {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [pendingCheckin, setPendingCheckin] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { tasks, updateTask } = useAppContext();
   const commandHandlers = useCommandHandlers();
@@ -399,26 +400,123 @@ export default function ChatPage() {
       // Extract everything after the check-in phrase
       const userMessage = match[2]?.trim() || "";
       const safeMessage = userMessage || "No details provided";
+
+      // Step 1: Get Bloom rating from Hugging Face API
+      let bloomFeedback = '';
+      let bloomScore = 0;
       try {
-        const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
+        const hfRes = await fetch("/api/rate-checkin", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            Source: "Bloom",
-            First_Name: "Nykeira",
-            Last_Name: "McRoy",
-            Check_In: safeMessage,
-            Timestamp: new Date().toISOString()
-          })
+          body: JSON.stringify({ text: safeMessage })
         });
-        if (res.ok) {
-          setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            text: `Got it — your check-in (“${safeMessage}”) was sent successfully!`,
-            isUser: false,
-            timestamp: new Date()
-          }]);
+        if (hfRes.ok) {
+          const data = await hfRes.json();
+          const result = data.result || [];
+          const label = result[0]?.label || "Neutral";
+          bloomScore = result[0]?.score ? Math.round(result[0].score * 5) : 3;
+          if (label === "Descriptive") {
+            bloomFeedback = "Clear, thoughtful, and specific check-in.";
+            // Auto-submit descriptive check-in
+            try {
+              const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  Source: "Bloom",
+                  First_Name: "Nykeira",
+                  Last_Name: "McRoy",
+                  Check_In: safeMessage,
+                  Timestamp: new Date().toISOString()
+                })
+              });
+              if (res.ok) {
+                setMessages(prev => [...prev, {
+                  id: Date.now() + 1,
+                  text: `Bloom Model Rating: ${bloomFeedback}\n\n✅ Your check-in (“${safeMessage}”) was submitted successfully!`,
+                  isUser: false,
+                  timestamp: new Date()
+                }]);
+              } else {
+                setMessages(prev => [...prev, {
+                  id: Date.now() + 1,
+                  text: `Bloom Model Rating: ${bloomFeedback}\n\nSomething went wrong sending your check-in.`,
+                  isUser: false,
+                  timestamp: new Date()
+                }]);
+              }
+            } catch (err) {
+              setMessages(prev => [...prev, {
+                id: Date.now() + 1,
+                text: `Bloom Model Rating: ${bloomFeedback}\n\nSomething went wrong sending your check-in.`,
+                isUser: false,
+                timestamp: new Date()
+              }]);
+            }
+            setIsTyping(false);
+            return;
+          } else if (label === "Neutral") {
+            bloomFeedback = "Somewhat informative but missing depth.";
+          } else if (label === "Vague") {
+            bloomFeedback = "Minimal or unclear update.";
+          } else {
+            bloomFeedback = "Bloom Assistant rated your check-in.";
+          }
         } else {
+          bloomFeedback = "Could not get rating from Bloom Assistant.";
+        }
+      } catch (err) {
+        bloomFeedback = "Could not get rating from Bloom Assistant.";
+      }
+
+      // Step 2: Show Bloom rating to user and ask for confirmation (only if not Descriptive)
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        text: 'Bloom Model Rating: ' + bloomFeedback + '\n\nYour check-in: "' + safeMessage + '"\n\nReply \'yes\' to submit your check-in, or \'no\' to cancel.',
+        isUser: false,
+        timestamp: new Date()
+      }]);
+      setIsTyping(false);
+
+      // Step 3: Wait for user confirmation (handled in next message)
+      setPendingCheckin(safeMessage);
+      return;
+    }
+
+    // Check for pending check-in confirmation
+    if (pendingCheckin) {
+      const confirmText = messageText.trim().toLowerCase();
+      if (confirmText === 'yes') {
+        // Submit check-in to webhook
+        const safeMessage = pendingCheckin;
+        try {
+          const res = await fetch("https://myvillageproject.app.n8n.cloud/webhook/a8f0dc29-4f34-491a-a2ec-ca87db49e0f6", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              Source: "Bloom",
+              First_Name: "Nykeira",
+              Last_Name: "McRoy",
+              Check_In: safeMessage,
+              Timestamp: new Date().toISOString()
+            })
+          });
+          if (res.ok) {
+            setMessages(prev => [...prev, {
+              id: Date.now() + 1,
+                  text: '✅ Your check-in ("' + safeMessage + '") was submitted successfully!',
+              isUser: false,
+              timestamp: new Date()
+            }]);
+          } else {
+            setMessages(prev => [...prev, {
+              id: Date.now() + 1,
+              text: "Something went wrong sending your check-in.",
+              isUser: false,
+              timestamp: new Date()
+            }]);
+          }
+        } catch (err) {
           setMessages(prev => [...prev, {
             id: Date.now() + 1,
             text: "Something went wrong sending your check-in.",
@@ -426,14 +524,27 @@ export default function ChatPage() {
             timestamp: new Date()
           }]);
         }
-      } catch (err) {
+        setPendingCheckin(null);
+        setIsTyping(false);
+        return;
+      } else if (confirmText === 'no') {
         setMessages(prev => [...prev, {
           id: Date.now() + 1,
-          text: "Something went wrong sending your check-in.",
+          text: "❌ Check-in cancelled.",
           isUser: false,
           timestamp: new Date()
         }]);
+        setPendingCheckin(null);
+        setIsTyping(false);
+        return;
       }
+      // If not yes/no, prompt again
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        text: "Please reply 'yes' to submit your check-in, or 'no' to cancel.",
+        isUser: false,
+        timestamp: new Date()
+      }]);
       setIsTyping(false);
       return;
     }
