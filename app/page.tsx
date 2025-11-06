@@ -6,7 +6,7 @@ import FlowerIcon from '@/components/FlowerIcon';
 import CalendarWidgetDashboard from '@/components/CalendarWidgetDashboard';
 import type { Task } from '@/types';
 
-// Custom modal component
+// Custom modal component for task summary
 interface TaskSummaryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,15 +21,12 @@ const TaskSummaryModal: React.FC<TaskSummaryModalProps> = ({
   children 
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-
-  // Close modal when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose();
       }
     }
-
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
@@ -37,55 +34,142 @@ const TaskSummaryModal: React.FC<TaskSummaryModalProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-      <div 
-        ref={modalRef}
-        className="bg-white rounded-2xl w-full max-w-md sm:max-w-lg md:max-w-xl overflow-hidden shadow-xl"
-      >
-        {/* Header with Bloom icon and close button */}
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-md sm:max-w-lg md:max-w-xl overflow-hidden shadow-xl">
         <div className="relative">
           <div className="flex items-center justify-center pt-5 pb-4 px-6 relative">
-            {/* Bloom icon - absolutely positioned on the left */}
             <div className="absolute left-6">
               <FlowerIcon className="h-5 w-5 text-indigo-500" />
             </div>
-            {/* Header title - centered */}
             <h3 className="text-lg font-medium text-gray-900">Task Updates</h3>
           </div>
         </div>
-        
-        {/* Content */}
-  <div className="px-4 sm:px-6 pb-6">
-          <p className="text-gray-600 text-sm text-center mb-6">
-            {children}
-          </p>
-          
-          {/* Buttons */}
+        <div className="px-4 sm:px-6 pb-6">
+          <p className="text-gray-600 text-sm text-center mb-6">{children}</p>
           <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
-            <button
-              type="button"
-              className="px-5 py-2 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-colors"
-              onClick={onClose}
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              className="px-5 py-2 rounded-full text-sm font-medium text-white shadow-sm transition-all duration-200"
-              style={{ background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)' }}
-              onMouseOver={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #6b62d4, #7369dc, #b3aae6)'}
-              onMouseOut={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'}
-              onClick={() => {
-                onClose();
-                onViewAll();
-              }}
-            >
-              View All Tasks
-            </button>
+            <button type="button" className="px-5 py-2 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-colors" onClick={onClose}>Close</button>
+            <button type="button" className="px-5 py-2 rounded-full text-sm font-medium text-white shadow-sm transition-all duration-200" style={{ background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)' }} onMouseOver={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #6b62d4, #7369dc, #b3aae6)'} onMouseOut={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)'} onClick={() => { onClose(); onViewAll(); }}>View All Tasks</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Modal for creating workspace
+// Modal for connecting apps
+interface ConnectAppModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConnect: (appName: string) => void;
+}
+
+const ConnectAppModal: React.FC<ConnectAppModalProps> = ({ isOpen, onClose, onConnect }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [appName, setAppName] = useState('');
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-md sm:max-w-lg md:max-w-xl overflow-hidden shadow-xl">
+        <div className="relative">
+          <div className="flex items-center justify-center pt-5 pb-4 px-6 relative">
+            <div className="absolute left-6">
+              <FlowerIcon className="h-5 w-5 text-indigo-500" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900">Connect App</h3>
+          </div>
+        </div>
+        <div className="px-4 sm:px-6 pb-6">
+          <div className="mb-4">
+            <input
+              type="text"
+              value={appName}
+              onChange={e => setAppName(e.target.value)}
+              placeholder="App name (e.g. Asana, Trello, Zoom)"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 placeholder-gray-400"
+              autoFocus
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
+            <button type="button" className="px-5 py-2 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-colors" onClick={onClose}>Cancel</button>
+            <button type="button" className="px-5 py-2 rounded-full text-sm font-medium text-white shadow-sm transition-all duration-200" style={{ background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)' }} onClick={() => { onConnect(appName); onClose(); }} disabled={!appName}>Connect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+interface CreateWorkspaceModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreate: (name: string, description: string) => void;
+}
+
+const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({ isOpen, onClose, onCreate }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-md sm:max-w-lg md:max-w-xl overflow-hidden shadow-xl">
+        <div className="relative">
+          <div className="flex items-center justify-center pt-5 pb-4 px-6 relative">
+            <div className="absolute left-6">
+              <FlowerIcon className="h-5 w-5 text-indigo-500" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900">Create Workspace</h3>
+          </div>
+        </div>
+        <div className="px-4 sm:px-6 pb-6">
+          <div className="mb-4">
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Workspace name (e.g. Marketing Team Workspace)"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 placeholder-gray-400"
+              autoFocus
+            />
+            <textarea
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Workspace description (e.g. For all marketing projects and team tasks)"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+              rows={3}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
+            <button type="button" className="px-5 py-2 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-colors" onClick={onClose}>Cancel</button>
+            <button type="button" className="px-5 py-2 rounded-full text-sm font-medium text-white shadow-sm transition-all duration-200" style={{ background: 'linear-gradient(to right, #766de0, #7d73e7, #bcb4ee)' }} onClick={() => { onCreate(name, description); onClose(); }} disabled={!name}>Create Workspace</button>
           </div>
         </div>
       </div>
@@ -97,11 +181,28 @@ export default function Home() {
   const { tasks, addTask, updateTask, deleteTask, reminders, deleteReminder, addProject } = useAppContext();
   const [showTaskSummary, setShowTaskSummary] = useState(false);
   const [taskSummary, setTaskSummary] = useState('You have 3 tasks due today and 2 overdue tasks.');
+  const [showCreateWorkspace, setShowCreateWorkspace] = useState(false);
+  const [showConnectApp, setShowConnectApp] = useState(false);
+  const handleConnectApp = (appName: string) => {
+    setTimeout(() => {
+      alert(`🔌 Connecting to ${appName}...\n\nThis would typically open an OAuth flow or connection settings for ${appName} in a real application.`);
+    }, 100);
+  };
   
   const handleViewAllTasks = () => {
     window.location.href = '/tasks';
   };
   // ...existing code...
+  const handleCreateWorkspace = (name: string, description: string) => {
+    addProject({
+      name,
+      description,
+      color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
+    });
+    setTimeout(() => {
+      alert(`✅ Workspace "${name}" created successfully!`);
+    }, 100);
+  };
   // Responsive dashboard grid and cards
   // Add responsive classes to all main containers, cards, and widgets below
 
@@ -312,60 +413,32 @@ export default function Home() {
               {/* Workspace Management */}
               <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
                 <button 
-                  onClick={() => {
-                    const action = prompt('Workspace Management\n\n1. Create new workspace\n2. View all workspaces\n\nEnter your choice (1-2):');
-                    
-                    if (action === '1') {
-                      const workspaceName = prompt('Enter workspace name:');
-                      if (workspaceName) {
-                        addProject({
-                          name: workspaceName,
-                          description: prompt('Workspace description (optional):') || '',
-                          color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
-                        });
-                        alert(`✅ Workspace "${workspaceName}" created successfully!`);
-                      }
-                    } else if (action === '2') {
-                      const projects: Array<{name: string; description?: string}> = []; // Get projects from your context
-                      if (projects.length === 0) {
-                        alert('No workspaces found.');
-                      } else {
-                        alert('Your Workspaces:\n\n' + 
-                          projects.map(p => `• ${p.name}${p.description ? ` - ${p.description}` : ''}`).join('\n')
-                        );
-                      }
-                    }
-                  }}
+                  onClick={() => setShowCreateWorkspace(true)}
                   className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
                 >
                   Create workspace
                 </button>
               </div>
+              <CreateWorkspaceModal
+                isOpen={showCreateWorkspace}
+                onClose={() => setShowCreateWorkspace(false)}
+                onCreate={handleCreateWorkspace}
+              />
 
               {/* App Integration */}
               <div className="h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 p-0.5">
                 <button 
-                  onClick={() => {
-                    const app = prompt('App Integration\n\n1. Google Calendar\n2. Slack\n3. Email\n4. Other...\n\nSelect an app to connect:');
-                    
-                    if (app) {
-                      const appName = {
-                        '1': 'Google Calendar',
-                        '2': 'Slack',
-                        '3': 'Email',
-                        '4': prompt('Enter app name:')
-                      }[app] || 'the selected app';
-                      
-                      if (appName) {
-                        alert(`🔌 Connecting to ${appName}...\n\nThis would typically open an OAuth flow or connection settings for ${appName} in a real application.`);
-                      }
-                    }
-                  }}
+                  onClick={() => setShowConnectApp(true)}
                   className="h-full px-5 bg-gray-50 text-black text-sm font-medium rounded-full hover:bg-white/10 transition-all flex items-center whitespace-nowrap"
                 >
                   Connect apps
                 </button>
               </div>
+              <ConnectAppModal
+                isOpen={showConnectApp}
+                onClose={() => setShowConnectApp(false)}
+                onConnect={handleConnectApp}
+              />
             </div>
           </div>
         </div>
