@@ -1,10 +1,9 @@
 "use client";
 
 import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import FlowerIcon from "@/components/FlowerIcon";
 import { AppProvider } from "@/context/AppContext";
@@ -12,7 +11,6 @@ import { AppProvider } from "@/context/AppContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
   const pathname = usePathname();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -95,6 +93,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       case 'bloom':
         return <FlowerIcon className="w-5 h-5" />;
       default:
+        return null;
+    }
+      default:
     }
   };
 
@@ -105,46 +106,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className}>
         <AppProvider>
-          <div className="flex min-h-screen items-stretch bg-gradient-to-b from-white to-[#f0e8ff]">
+          <div className="flex min-h-screen items-stretch bg-gradient-to-b from-white to-[#f0e8ff] overflow-hidden">
             {/* Sidebar for desktop */}
-            <aside className={`bg-white shadow-lg border-r border-gray-200 flex flex-col h-screen min-h-0 overflow-y-auto transition-all duration-300
+            <aside className={`bg-white shadow-lg border-r border-gray-200 flex flex-col h-screen overflow-y-scroll overscroll-contain touch-pan-y transition-all duration-300 fixed top-0 left-0 z-30
               ${sidebarCollapsed ? 'w-20' : 'w-64'}
               hidden md:flex
             `}>
-              {/* ...sidebar content... */}
-              <nav className="flex-1 px-2 py-4">
-                <ul className="space-y-1">
-                  <li>
-                    <Link href="/" className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-2 px-3'} py-2 rounded-lg text-sm w-full text-left transition-colors ${pathname === '/' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`} title={sidebarCollapsed ? 'Home' : ''}>
-                      {renderIcon('home')}
-                      {!sidebarCollapsed && <span>Home</span>}
-                    </Link>
-                  </li>
-                  {navItems.slice(1).map((item) => (
-                    <li key={item.name}>
-                      <Link 
-                        href={item.href}
-                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-2 px-3'} py-2 rounded-lg text-sm w-full text-left transition-colors ${pathname === item.href ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`}
-                        title={sidebarCollapsed ? item.name : ''}
-                      >
-                        {renderIcon(item.icon)}
-                        {!sidebarCollapsed && <span>{item.name}</span>}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-              {/* Projects Section */}
-              <div className="mt-8">
-                <div className={`${sidebarCollapsed ? 'px-2' : 'px-3'} mb-4`}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-900">My Projects</span>
-                    <button className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700">
-                      <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f0efff', color: '#736ee1'}}>+ Add</span>
-                    </button>
+              <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                {!sidebarCollapsed && (
+                  <div className="flex items-center gap-2 text-gray-900 font-semibold">
+                    <FlowerIcon className="w-5 h-5 text-indigo-500" />
+                    <span>Bloom</span>
                   </div>
-                </div>
-                <ul className="space-y-1 px-2">
+                )}
                   {['Product launch', 'Team brainstorm', 'Branding launch'].map((project, index) => (
                     <li key={project} className="group">
                       <a 
@@ -185,7 +159,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </button>
             </aside>
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0" style={{marginLeft: sidebarCollapsed ? '5rem' : '16rem'}}>
               {/* Topbar for mobile */}
               <header className="md:hidden bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 h-16">
                 <button className="p-2" onClick={() => setMobileNavOpen(true)}>

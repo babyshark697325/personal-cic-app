@@ -177,7 +177,7 @@ const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({ isOpen, onC
   );
 };
 
-export default function Home() {
+const Home: React.FC<{ sidebarCollapsed?: boolean }> = ({ sidebarCollapsed }) => {
   const { tasks, addTask, updateTask, deleteTask, reminders, deleteReminder, addProject } = useAppContext();
   const [showTaskSummary, setShowTaskSummary] = useState(false);
   const [taskSummary, setTaskSummary] = useState('You have 3 tasks due today and 2 overdue tasks.');
@@ -335,8 +335,8 @@ export default function Home() {
         className="w-full"
         style={{
           height: '480px',
-          marginLeft: '260px', // Further increased sidebar width
-          width: 'calc(100% - 260px)',
+          marginLeft: sidebarCollapsed ? '5rem' : '16rem',
+          width: sidebarCollapsed ? 'calc(100% - 5rem)' : 'calc(100% - 16rem)',
           backgroundImage: `
             linear-gradient(to right, #9ca3af 1px, transparent 1px),
             linear-gradient(to bottom, #9ca3af 1px, transparent 1px)
@@ -1018,3 +1018,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default Home;
