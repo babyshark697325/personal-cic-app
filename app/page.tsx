@@ -177,7 +177,7 @@ const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({ isOpen, onC
   );
 };
 
-const Home: React.FC<{ sidebarCollapsed?: boolean }> = ({ sidebarCollapsed }) => {
+const Home: React.FC = () => {
   const { tasks, addTask, updateTask, deleteTask, reminders, deleteReminder, addProject } = useAppContext();
   const [showTaskSummary, setShowTaskSummary] = useState(false);
   const [taskSummary, setTaskSummary] = useState('You have 3 tasks due today and 2 overdue tasks.');
@@ -192,7 +192,6 @@ const Home: React.FC<{ sidebarCollapsed?: boolean }> = ({ sidebarCollapsed }) =>
   const handleViewAllTasks = () => {
     window.location.href = '/tasks';
   };
-  // ...existing code...
   const handleCreateWorkspace = (name: string, description: string) => {
     addProject({
       name,
@@ -647,7 +646,7 @@ const Home: React.FC<{ sidebarCollapsed?: boolean }> = ({ sidebarCollapsed }) =>
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
+                </svg>
                 </button>
                 <span className="text-black text-xs font-medium px-2 py-1 rounded" style={{backgroundColor: '#f4f6f8'}}>TO DO</span>
                 <span className="text-sm text-gray-600">• {inProgressTasks.length} task{inProgressTasks.length !== 1 ? 's' : ''}</span>
