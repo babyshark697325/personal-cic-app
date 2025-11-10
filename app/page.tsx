@@ -335,8 +335,8 @@ const Home: React.FC<{ sidebarCollapsed?: boolean }> = ({ sidebarCollapsed }) =>
         className="w-full"
         style={{
           height: '480px',
-          marginLeft: sidebarCollapsed ? '5rem' : '16rem',
-          width: sidebarCollapsed ? 'calc(100% - 5rem)' : 'calc(100% - 16rem)',
+          marginLeft: 0,
+          width: '100%',
           backgroundImage: `
             linear-gradient(to right, #9ca3af 1px, transparent 1px),
             linear-gradient(to bottom, #9ca3af 1px, transparent 1px)

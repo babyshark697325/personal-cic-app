@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import { Inter } from "next/font/google";
-import React, { useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import FlowerIcon from "@/components/FlowerIcon";
@@ -95,8 +95,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       default:
         return null;
     }
-      default:
-    }
   };
 
   return (
@@ -119,6 +117,54 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <span>Bloom</span>
                   </div>
                 )}
+                <button
+                  type="button"
+                  onClick={() => setSidebarCollapsed((prev) => !prev)}
+                  className="p-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                  aria-label="Toggle sidebar width"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                    {sidebarCollapsed ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 5l-5 5 5 5" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 5l5 5-5 5" />
+                    )}
+                  </svg>
+                </button>
+              </div>
+              <nav className="flex-1 px-2 py-4">
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/" className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-2 px-3'} py-2 rounded-lg text-sm w-full text-left transition-colors ${pathname === '/' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`} title={sidebarCollapsed ? 'Home' : ''}>
+                      {renderIcon('home')}
+                      {!sidebarCollapsed && <span>Home</span>}
+                    </Link>
+                  </li>
+                  {navItems.slice(1).map((item) => (
+                    <li key={item.name}>
+                      <Link 
+                        href={item.href}
+                        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-2 px-3'} py-2 rounded-lg text-sm w-full text-left transition-colors ${pathname === item.href ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`}
+                        title={sidebarCollapsed ? item.name : ''}
+                      >
+                        {renderIcon(item.icon)}
+                        {!sidebarCollapsed && <span>{item.name}</span>}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              {/* Projects Section */}
+              <div className="mt-8">
+                <div className={`${sidebarCollapsed ? 'px-2' : 'px-3'} mb-4`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-900">My Projects</span>
+                    <button className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium" style={{backgroundColor: '#f0efff', color: '#736ee1'}}>+ Add</span>
+                    </button>
+                  </div>
+                </div>
+                <ul className="space-y-1 px-2">
                   {['Product launch', 'Team brainstorm', 'Branding launch'].map((project, index) => (
                     <li key={project} className="group">
                       <a 
