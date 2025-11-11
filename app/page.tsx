@@ -329,11 +329,11 @@ const Home: React.FC = () => {
   };
 
   return (
-  <main className="px-4 sm:px-8 pb-24 sm:pb-8 relative max-w-2xl sm:max-w-full mx-auto w-full">
+  <main className="px-2 sm:px-8 pb-24 sm:pb-8 relative max-w-full mx-auto w-full bg-gradient-to-b from-white to-[#f0e8ff] overflow-hidden">
     {/* Grid background pattern with fade - starts at very top, behind header */}
-    <div className="fixed inset-0 top-0 left-0 w-full pointer-events-none" style={{zIndex: 0}}>
+    <div className="fixed inset-0 top-0 left-0 w-full h-full pointer-events-none" style={{zIndex: 0, background: 'linear-gradient(to bottom, #fff 60%, #f0e8ff 100%)'}}>
       <div
-        className="w-full"
+        className="w-full h-full"
         style={{
           height: '480px',
           marginLeft: 0,
@@ -445,10 +445,10 @@ const Home: React.FC = () => {
         </div>
 
         {/* Dashboard Widget Grid - 2 Column layout */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           {/* Left Column - My Tasks Widget */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
+          <div className="space-y-6 w-full min-w-0">
+            <div className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200 w-full">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{color: '#837acb'}}>
